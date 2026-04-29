@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICFES Técnico Superior - App</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== RESET Y BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* ========== VARIABLES ========== */
+        :root {
+            --verde-principal: #10B981;
+            --verde-claro: #34D399;
+            --verde-oscuro: #059669;
+            --negro: #0a0a0a;
+            --gris-oscuro: #1a1a1a;
+            --gris: #2a2a2a;
+            --gris-claro: #3a3a3a;
+            --blanco: #ffffff;
+        }
+
+        /* ========== ANIMACIONES ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            background: var(--negro);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: var(--negro);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--blanco);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            color: var(--verde-claro);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--gris-claro);
+            color: var(--blanco);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--verde-principal);
+            color: var(--verde-principal);
+        }
+
+        /* ========== NAV ========== */
+        .nav {
+            background: var(--negro);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+            padding: 0 2rem;
+        }
+
+        .nav-list {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            color: var(--blanco);
+            font-weight: 500;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: var(--verde-principal);
+            color: var(--negro);
+        }
+
+        /* ========== MAIN ========== */
+        .main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: var(--blanco);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--gris-oscuro);
+            border: 1px solid var(--gris);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: scaleIn 0.6s ease-out both;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--verde-principal), var(--verde-claro));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--verde-principal);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.2);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--blanco);
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            color: #a0a0a0;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
+            color: var(--blanco);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .card-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-list {
+                flex-wrap: wrap;
+                gap: 1rem;
+                padding: 0.5rem 0;
+            }
+
+            .nav-item {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="index.html" class="logo">
+            <div class="logo-icon">S11</div>
+            <div class="logo-text">ICFES</div>
+        </a>
+        <div class="user-info">
+            <span class="user-name" id="user-name">Cargando...</span>
+            <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <ul class="nav-list">
+            <li class="nav-item active" data-category="icfes">ICFES Tema General</li>
+            <li class="nav-item" data-category="retos">Retos</li>
+            <li class="nav-item" data-category="simulacros">Simulacros</li>
+            <li class="nav-item" data-category="preguntas">Preguntas Rápidas</li>
+        </ul>
+    </nav>
+
+    <main class="main">
+        <section class="content-section active" id="icfes">
+            <h1 class="section-title">ICFES — Tema General</h1>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">📐</div>
+                    <h3 class="card-title">Matemáticas</h3>
+                    <p class="card-description">Álgebra, geometría, estadística y razonamiento cuantitativo para el examen ICFES.</p>
+                    <button class="card-btn">Explorar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📖</div>
+                    <h3 class="card-title">Lectura Crítica</h3>
+                    <p class="card-description">Comprensión lectora, análisis de textos y habilidades interpretativas.</p>
+                    <button class="card-btn">Explorar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🌍</div>
+                    <h3 class="card-title">Inglés</h3>
+                    <p class="card-description">Vocabulario, gramática y comprensión auditiva del idioma inglés.</p>
+                    <button class="card-btn">Explorar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏛️</div>
+                    <h3 class="card-title">Sociales y Ciudadanía</h3>
+                    <p class="card-description">Historia, geografía, economía y conceptos de ciudadanía.</p>
+                    <button class="card-btn">Explorar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🧬</div>
+                    <h3 class="card-title">Ciencias Naturales</h3>
+                    <p class="card-description">Biología, química, física y ciencias de la tierra.</p>
+                    <button class="card-btn">Explorar <span>→</span></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" id="retos">
+            <h1 class="section-title">Retos</h1>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Reto del día</h3>
+                    <p class="card-description">Completa el desafío diario para mantener tu preparación activa.</p>
+                    <button class="card-btn">Comenzar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📅</div>
+                    <h3 class="card-title">Meta semanal</h3>
+                    <p class="card-description">Establece y alcanza tus objetivos de estudio semanales.</p>
+                    <button class="card-btn">Configurar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏆</div>
+                    <h3 class="card-title">Desafío por bloque</h3>
+                    <p class="card-description">Enfréntate a retos específicos de cada área del examen.</p>
+                    <button class="card-btn">Elegir bloque <span>→</span></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" id="simulacros">
+            <h1 class="section-title">Simulacros</h1>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h3 class="card-title">Simulacro completo</h3>
+                    <p class="card-description">Prueba completa del examen ICFES con tiempo limitado.</p>
+                    <button class="card-btn">Iniciar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🔍</div>
+                    <h3 class="card-title">Simulacro por bloque</h3>
+                    <p class="card-description">Enfócate en un área específica del examen.</p>
+                    <button class="card-btn">Seleccionar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Repaso de resultados</h3>
+                    <p class="card-description">Analiza tus simulacros anteriores y mejora tus puntos débiles.</p>
+                    <button class="card-btn">Ver resultados <span>→</span></button>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section" id="preguntas">
+            <h1 class="section-title">Preguntas Rápidas</h1>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎲</div>
+                    <h3 class="card-title">10 preguntas aleatorias</h3>
+                    <p class="card-description">Sesión rápida con preguntas de diferentes áreas.</p>
+                    <button class="card-btn">Jugar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⏱️</div>
+                    <h3 class="card-title">Contrarreloj</h3>
+                    <p class="card-description">Responde la mayor cantidad posible en tiempo limitado.</p>
+                    <button class="card-btn">Comenzar <span>→</span></button>
+                </div>
+                <div class="card">
+                    <div class="card-icon">📚</div>
+                    <h3 class="card-title">Por materia</h3>
+                    <p class="card-description">Practica preguntas específicas de una materia.</p>
+                    <button class="card-btn">Elegir materia <span>→</span></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { supabase } from './js/supabase.js';
+
+        // Verificar sesión al cargar
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'iniciarsesion.html';
+                return;
+            }
+            // Mostrar nombre del usuario
+            const userName = session.user.user_metadata?.name || session.user.email;
+            document.getElementById('user-name').textContent = userName;
+        }
+
+        // Manejar navegación
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remover active de todos
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+
+                // Agregar active al seleccionado
+                item.classList.add('active');
+                const category = item.dataset.category;
+                document.getElementById(category).classList.add('active');
+            });
+        });
+
+        // Manejar logout
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        });
+
+        // Inicializar
+        checkSession();
+    </script>
+</body>
+</html>
+                  <span class="block-card__cta">Explorar bloque</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="lectura">
+                  <span class="block-card__num">02</span>
+                  <h3 class="block-card__name">Lectura crítica</h3>
+                  <p class="block-card__desc">Comprensión lectora, inferencias e interpretación de textos.</p>
+                  <span class="block-card__cta">Explorar bloque</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="ingles">
+                  <span class="block-card__num">03</span>
+                  <h3 class="block-card__name">Inglés</h3>
+                  <p class="block-card__desc">Competencias comunicativas en lengua extranjera.</p>
+                  <span class="block-card__cta">Explorar bloque</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="ciudadania">
+                  <span class="block-card__num">04</span>
+                  <h3 class="block-card__name">Ciudadanía y sociales</h3>
+                  <p class="block-card__desc">Competencias ciudadanas, historia, geografía y contexto social.</p>
+                  <span class="block-card__cta">Explorar bloque</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="ciencias">
+                  <span class="block-card__num">05</span>
+                  <h3 class="block-card__name">Ciencias naturales</h3>
+                  <p class="block-card__desc">Física, química y biología integradas.</p>
+                  <span class="block-card__cta">Explorar bloque</span>
+                </article>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="category-panel" data-panel="retos" id="panel-retos" hidden>
+          <section class="hero">
+            <div class="hero__text">
+              <p class="hero__eyebrow">Categoría activa</p>
+              <h2 class="hero__title">Retos</h2>
+              <p class="hero__desc">
+                Pon a prueba tu constancia con metas diarias, semanales y desafíos por bloque.
+                Ideal para mantener el ritmo sin aburrirte.
+              </p>
+            </div>
+          </section>
+
+          <section class="blocks" aria-labelledby="blocks-title-retos">
+            <h2 id="blocks-title-retos" class="blocks__title">Tipos de reto</h2>
+            <ul class="blocks__grid">
+              <li>
+                <article class="block-card" data-block="reto-dia">
+                  <span class="block-card__num">R1</span>
+                  <h3 class="block-card__name">Reto del día</h3>
+                  <p class="block-card__desc">Una mini sesión diaria para no perder el hábito de estudio.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="reto-semana">
+                  <span class="block-card__num">R2</span>
+                  <h3 class="block-card__name">Meta semanal</h3>
+                  <p class="block-card__desc">Acumula puntos completando objetivos de la semana.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="reto-bloque">
+                  <span class="block-card__num">R3</span>
+                  <h3 class="block-card__name">Desafío por bloque</h3>
+                  <p class="block-card__desc">Retos enfocados en un solo componente del ICFES.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="category-panel" data-panel="simulacros" id="panel-simulacros" hidden>
+          <section class="hero">
+            <div class="hero__text">
+              <p class="hero__eyebrow">Categoría activa</p>
+              <h2 class="hero__title">Simulacros</h2>
+              <p class="hero__desc">
+                Practica en condiciones parecidas al examen: tiempo, cantidad de ítems y mezcla de bloques.
+              </p>
+            </div>
+          </section>
+
+          <section class="blocks" aria-labelledby="blocks-title-simulacros">
+            <h2 id="blocks-title-simulacros" class="blocks__title">Opciones de simulacro</h2>
+            <ul class="blocks__grid">
+              <li>
+                <article class="block-card" data-block="simulacro-completo">
+                  <span class="block-card__num">S1</span>
+                  <h3 class="block-card__name">Simulacro completo</h3>
+                  <p class="block-card__desc">Todos los bloques en una sola prueba, con cronómetro.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="simulacro-bloque">
+                  <span class="block-card__num">S2</span>
+                  <h3 class="block-card__name">Simulacro por bloque</h3>
+                  <p class="block-card__desc">Enfócate en matemáticas, lectura, inglés, sociales o ciencias.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="simulacro-resultados">
+                  <span class="block-card__num">S3</span>
+                  <h3 class="block-card__name">Repaso de resultados</h3>
+                  <p class="block-card__desc">Vuelve a los ítems fallados y refuerza conceptos débiles.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <div class="category-panel" data-panel="preguntas-rapidas" id="panel-preguntas-rapidas" hidden>
+          <section class="hero">
+            <div class="hero__text">
+              <p class="hero__eyebrow">Categoría activa</p>
+              <h2 class="hero__title">Preguntas rápidas</h2>
+              <p class="hero__desc">
+                Sesiones breves para repasar entre clases o en el transporte: pocas preguntas, máximo impacto.
+              </p>
+            </div>
+          </section>
+
+          <section class="blocks" aria-labelledby="blocks-title-rapidas">
+            <h2 id="blocks-title-rapidas" class="blocks__title">Modos rápidos</h2>
+            <ul class="blocks__grid">
+              <li>
+                <article class="block-card" data-block="rapidas-10">
+                  <span class="block-card__num">P1</span>
+                  <h3 class="block-card__name">10 preguntas aleatorias</h3>
+                  <p class="block-card__desc">Mezcla de bloques o solo los que elijas.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="rapidas-crono">
+                  <span class="block-card__num">P2</span>
+                  <h3 class="block-card__name">Contrarreloj</h3>
+                  <p class="block-card__desc">Responde todo lo que puedas antes de que se acabe el tiempo.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+              <li>
+                <article class="block-card" data-block="rapidas-materia">
+                  <span class="block-card__num">P3</span>
+                  <h3 class="block-card__name">Por materia</h3>
+                  <p class="block-card__desc">Preguntas rápidas filtradas por un solo bloque del ICFES.</p>
+                  <span class="block-card__cta">Ver detalle</span>
+                </article>
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        <section class="detail" id="block-detail" hidden aria-live="polite">
+          <button type="button" class="detail__back" id="detail-back">← Volver</button>
+          <div class="detail__inner" id="detail-content"></div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <p>Aplicación de estudio — ICFES Saber 11. Contenido educativo de referencia.</p>
+    </footer>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

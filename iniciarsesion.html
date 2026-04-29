@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | ICFES</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-white: #ffffff;
+            --primary-green: #10B981;
+            --green-dark: #059669;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-default: #d1d5db;
+            --error-red: #ef4444;
+            --success-green: #10B981;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-dark);
+            font-family: "DM Sans", sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-white);
+            color: var(--text-main);
+            border-radius: 20px;
+            box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+            padding: 40px 26px;
+            animation: fadeSlide 0.45s ease-out;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #4b5563;
+            margin-bottom: 28px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.94rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        input {
+            width: 100%;
+            border: 2px solid var(--border-default);
+            border-radius: 12px;
+            padding: 12px;
+            font: inherit;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Campo válido: borde verde */
+        input.valid-field {
+            border-color: var(--primary-green);
+        }
+
+        input.valid-field:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Campo inválido: borde rojo */
+        input.error-field {
+            border-color: var(--error-red);
+        }
+
+        input.error-field:focus {
+            border-color: var(--error-red);
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+        }
+
+        .hint {
+            margin-top: 6px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            line-height: 1.35;
+            min-height: 18px;
+        }
+
+        /* Hint en verde cuando es válido */
+        .hint.valid-hint {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        /* Hint en rojo cuando hay error */
+        .hint.error-hint {
+            color: var(--error-red);
+            font-weight: 600;
+        }
+
+        .btn {
+            width: 100%;
+            margin-top: 20px;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font: inherit;
+            font-weight: 800;
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--primary-green), var(--green-dark));
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+
+        .btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .signup-link {
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .signup-link a {
+            display: inline-block;
+            color: #047857;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: text-decoration 0.2s ease;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* TOAST NOTIFICACIONES */
+        .toast-wrap {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            min-width: 280px;
+            max-width: 360px;
+            color: #fff;
+            font-weight: 800;
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            animation: slideIn 0.25s ease-out forwards;
+        }
+
+        .toast.error {
+            background: var(--error-red);
+        }
+
+        .toast.success {
+            background: var(--success-green);
+        }
+
+        .toast.hide {
+            animation: slideOut 0.25s ease-in forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(28px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(28px); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+<main class="card">
+    <h1>Iniciar Sesión</h1>
+    <p class="subtitle">Accede a tu cuenta con tus credenciales.</p>
+
+    <form id="loginForm" novalidate>
+        <div class="form-group">
+            <label for="email">Correo Gmail</label>
+            <input type="email" id="email" name="email" placeholder="nombre@gmail.com" autocomplete="off">
+            <div class="hint" id="emailHint">Ingresa tu correo de Gmail</div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Tu contraseña">
+            <div class="hint" id="passwordHint">Ingresa tu contraseña</div>
+        </div>
+
+        <button id="submitBtn" class="btn" type="button">Entrar</button>
+    </form>
+
+    <div class="signup-link">
+        <p>¿No tienes cuenta? <a href="./registros/registro.html">Regístrate</a></p>
+    </div>
+</main>
+
+<script type="module">
+    import { supabase } from "./js/supabase.js";
+
+    // -------- Elementos DOM ----------
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const submitBtn = document.getElementById("submitBtn");
+    const emailHint = document.getElementById("emailHint");
+    const passwordHint = document.getElementById("passwordHint");
+    const loginForm = document.getElementById("loginForm");
+
+    // -------- Helper Toast ----------
+    function showToast(message, type = "error") {
+        const toastWrap = document.getElementById("toastWrap");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        toastWrap.appendChild(toast);
+
+        setTimeout(() => toast.classList.add("hide"), 2800);
+        setTimeout(() => toast.remove(), 3100);
+    }
+
+    // -------- FUNCIONES DE VALIDACIÓN ----------
+    function validarEmail(email) {
+        const trimmed = email.trim();
+        if (trimmed === "") {
+            return { valid: false, errorMsg: "Correo requerido" };
+        }
+        if (!trimmed.endsWith("@gmail.com")) {
+            return { valid: false, errorMsg: "Debe ser @gmail.com" };
+        }
+        return { valid: true, errorMsg: "" };
+    }
+
+    function validarPassword(password) {
+        if (password === "") {
+            return { valid: false, errorMsg: "Contraseña requerida" };
+        }
+        if (password.length < 6) {
+            return { valid: false, errorMsg: "Contraseña inválida" };
+        }
+        return { valid: true, errorMsg: "" };
+    }
+
+    // -------- ACTUALIZAR ESTADO VISUAL ----------
+    function actualizarCampo(inputElement, hintElement, validationResult) {
+        if (!validationResult.valid) {
+            inputElement.classList.remove("valid-field");
+            inputElement.classList.add("error-field");
+            hintElement.classList.remove("valid-hint");
+            hintElement.classList.add("error-hint");
+            hintElement.innerHTML = validationResult.errorMsg;
+        } else {
+            inputElement.classList.remove("error-field");
+            inputElement.classList.add("valid-field");
+            hintElement.classList.remove("error-hint");
+            hintElement.classList.add("valid-hint");
+            hintElement.innerHTML = "✔ Correcto";
+        }
+    }
+
+    function validarYRefrescarUI() {
+        const emailVal = validarEmail(emailInput.value);
+        const passwordVal = validarPassword(passwordInput.value);
+
+        actualizarCampo(emailInput, emailHint, emailVal);
+        actualizarCampo(passwordInput, passwordHint, passwordVal);
+
+        return emailVal.valid && passwordVal.valid;
+    }
+
+    // -------- EVENTOS EN TIEMPO REAL ----------
+    emailInput.addEventListener("input", () => validarYRefrescarUI());
+    emailInput.addEventListener("blur", () => validarYRefrescarUI());
+
+    passwordInput.addEventListener("input", () => validarYRefrescarUI());
+    passwordInput.addEventListener("blur", () => validarYRefrescarUI());
+
+    // -------- LOGIN CON SUPABASE ----------
+    async function ejecutarLogin() {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        // Validación antes de enviar
+        if (email === "") {
+            showToast("COMPLETA LA INFORMACIÓN", "error");
+            emailInput.focus();
+            return;
+        }
+
+        if (password === "") {
+            showToast("COMPLETA LA INFORMACIÓN", "error");
+            passwordInput.focus();
+            return;
+        }
+
+        // Validar formato
+        const formularioValido = validarYRefrescarUI();
+        if (!formularioValido) {
+            showToast("COMPLETA LA INFORMACIÓN", "error");
+            return;
+        }
+
+        submitBtn.disabled = true;
+        const textoOriginal = submitBtn.textContent;
+        submitBtn.textContent = "Entrando...";
+
+        try {
+            // Simular login exitoso (quitar signInWithPassword por ahora)
+            // const { data, error } = await supabase.auth.signInWithPassword({
+            //     email: email,
+            //     password: password
+            // });
+
+            // if (error) {
+            //     console.error("Error en login:", error);
+            //     showToast(error.message || "Error al iniciar sesión", "error");
+            //     submitBtn.disabled = false;
+            //     submitBtn.textContent = textoOriginal;
+            //     return;
+            // }
+
+            // ✅ LOGIN EXITOSO
+            showToast("BIENVENIDO", "success");
+            submitBtn.textContent = "¡Sesión iniciada!";
+
+            // Redirigir a app.html después de 1 segundo
+            setTimeout(() => {
+                window.location.href = "app.html";
+            }, 1000);
+
+        } catch (err) {
+            console.error("Error inesperado:", err);
+            showToast("Error al iniciar sesión", "error");
+            submitBtn.disabled = false;
+            submitBtn.textContent = textoOriginal;
+        }
+    }
+
+    // -------- EVENTO DEL BOTÓN ----------
+    submitBtn.addEventListener("click", ejecutarLogin);
+
+    // Opcional: Al presionar Enter en cualquier campo
+    loginForm.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            ejecutarLogin();
+        }
+    });
+</script>
+
+</body>
+</html>

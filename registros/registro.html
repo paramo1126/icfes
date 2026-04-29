@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Registro ICFES | Validación estricta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --card-white: #ffffff;
+            --primary-green: #10B981;
+            --green-dark: #059669;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-default: #d1d5db;
+            --error-red: #ef4444;
+            --error-bg: #fee2e2;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg-dark);
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            max-width: 520px;
+            width: 100%;
+            background: var(--card-white);
+            border-radius: 2rem;
+            padding: 2rem 1.8rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35);
+            animation: fadeSlide 0.4s ease;
+        }
+
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--text-main);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 1.8rem;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            border: 1.5px solid var(--border-default);
+            border-radius: 14px;
+            background: white;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+
+        /* ESTILO DE CAMPO INVÁLIDO: BORDE ROJO */
+        input.error-field, select.error-field {
+            border-color: var(--error-red);
+            background-color: #fff5f5;
+        }
+
+        input.error-field:focus, select.error-field:focus {
+            border-color: var(--error-red);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            margin-top: 0.4rem;
+            line-height: 1.35;
+            color: var(--text-muted);
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* HINT EN ROJO CUANDO NO CUMPLE */
+        .hint.error-hint {
+            color: var(--error-red);
+            font-weight: 500;
+        }
+
+        .btn {
+            width: 100%;
+            background: linear-gradient(105deg, var(--primary-green), var(--green-dark));
+            border: none;
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 0.9rem;
+            border-radius: 40px;
+            margin-top: 0.8rem;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            font-family: inherit;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.2rem;
+            color: var(--green-dark);
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .login-link:hover {
+            text-decoration: underline;
+        }
+
+        .signup-link {
+            margin-top: 18px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .signup-link a {
+            color: var(--green-dark);
+            font-weight: 700;
+            text-decoration: none;
+            transition: text-decoration 0.2s ease;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* TOAST NOTIFICACIONES */
+        .toast-wrap {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+            animation: slideIn 0.25s ease forwards;
+            max-width: 320px;
+        }
+
+        .toast.error {
+            background: var(--error-red);
+            border-left: 4px solid #b91c1c;
+        }
+
+        .toast.success {
+            background: var(--primary-green);
+            border-left: 4px solid #064e3b;
+        }
+
+        .toast.hide {
+            animation: slideOut 0.2s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            to { opacity: 0; transform: translateX(40px); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
+
+<main class="card">
+    <h1>Registro ICFES Tecnico Superior </h1>
+    <p class="subtitle">Completa todos los campos correctamente.</p>
+
+    <form id="registroForm" novalidate>
+        <div class="form-group">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Joseph Alexander" autocomplete="off">
+            <div class="hint" id="nombreHint"> Debes colocar Mínimo 12 caracteres</div>
+        </div>
+
+        <div class="form-group">
+            <label for="grado">Grado</label>
+            <select id="grado" name="grado">
+                <option value="">Selecciona tu grado</option>
+                <option value="10">10° grado</option>
+                <option value="11">11° grado</option>
+            </select>
+            <div class="hint" id="gradoHint"> Obligatorio seleccionar grado</div>
+        </div>
+
+        <div class="form-group">
+            <label for="whatsapp">WhatsApp</label>
+            <input type="tel" id="whatsapp" name="whatsapp" placeholder="3001234567" maxlength="10" inputmode="numeric">
+            <div class="hint" id="whatsappHint">Debes colocar 10 dígitos numéricos (solo números)</div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Correo Gmail</label>
+            <input type="email" id="email" name="email" placeholder="nombre@gmail.com" autocomplete="off">
+            <div class="hint" id="emailHint">Debes tener un correo terminar en @gmail.com, si no tienes debes crear una</div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Crear Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres">
+            <div class="hint" id="passwordHint"> Empieza con mayúscula y el mínimo 8 caracteres</div>
+        </div>
+
+        <button type="button" id="submitBtn" class="btn">Registrar</button>
+    </form>
+
+    <div class="signup-link">
+        <p>¿Ya tienes cuenta? <a href="../iniciarsesion.html">Inicia sesión</a></p>
+    </div>
+</main>
+
+<script type="module">
+    import { supabase } from "../js/supabase.js";
+
+    // -------- Elementos DOM ----------
+    const nombreInput = document.getElementById("nombre");
+    const gradoSelect = document.getElementById("grado");
+    const whatsappInput = document.getElementById("whatsapp");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const submitBtn = document.getElementById("submitBtn");
+
+    const nombreHint = document.getElementById("nombreHint");
+    const gradoHint = document.getElementById("gradoHint");
+    const whatsappHint = document.getElementById("whatsappHint");
+    const emailHint = document.getElementById("emailHint");
+    const passwordHint = document.getElementById("passwordHint");
+
+    // -------- Helper Toast (notificación única) ----------
+    function showToast(message, type = "error") {
+        const toastWrap = document.getElementById("toastWrap");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        toastWrap.appendChild(toast);
+        setTimeout(() => toast.classList.add("hide"), 2800);
+        setTimeout(() => toast.remove(), 3100);
+    }
+
+    // -------- FUNCIONES DE VALIDACIÓN (devuelven { valid, errorMsg }) ----------
+    function validarNombre(nombre) {
+        const trimmed = nombre.trim();
+        if (trimmed === "") {
+            return { valid: false, errorMsg: "❌ El nombre no puede estar vacío" };
+        }
+        if (trimmed.length < 12) {
+            return { valid: false, errorMsg: "❌ Mínimo 12 caracteres" };
+        }
+        return { valid: true, errorMsg: "" };
+    }
+
+    function validarGrado(grado) {
+        if (grado === "") {
+            return { valid: false, errorMsg: "❌ Selecciona tu grado (10° u 11°)" };
+        }
+        return { valid: true, errorMsg: "" };
+    }
+
+    function validarWhatsapp(whatsapp) {
+        const limpio = whatsapp.trim();
+        if (limpio === "") {
+            return { valid: false, errorMsg: "❌ Número de WhatsApp requerido" };
+        }
+        if (!/^\d{10}$/.test(limpio)) {
+            return { valid: false, errorMsg: "❌ Debe tener exactamente 10 dígitos numéricos" };
+        }
+        return { valid: true, errorMsg: "" };
+    }
+
+    function validarEmail(email) {
+        const limpio = email.trim();
+        if (limpio === "") {
+            return { valid: false, errorMsg: "❌ Correo obligatorio" };
+        }
+        if (!limpio.endsWith("@gmail.com")) {
+            return { valid: false, errorMsg: "❌ Debe ser @gmail.com" };
+        }
+        return { valid: true, errorMsg: "" };
+    }
+
+    function validarPassword(password) {
+        if (password === "") {
+            return { valid: false, errorMsg: "❌ Contraseña obligatoria" };
+        }
+        if (password.length < 8) {
+            return { valid: false, errorMsg: "❌ Mínimo 8 caracteres" };
+        }
+        if (!/^[A-Z]/.test(password)) {
+            return { valid: false, errorMsg: "❌ Primera letra debe ser mayúscula" };
+        }
+        return { valid: true, errorMsg: "" };
+    }
+
+    // -------- ACTUALIZAR ESTADO VISUAL (borde rojo + hint rojo) ----------
+    // mensajeOriginal: texto que aparece cuando es válido
+    function actualizarCampo(inputElement, hintElement, validationResult, mensajeOriginal) {
+        if (!validationResult.valid) {
+            // Campo inválido: borde rojo y hint rojo con mensaje de error
+            inputElement.classList.add("error-field");
+            hintElement.classList.add("error-hint");
+            hintElement.innerHTML = validationResult.errorMsg;
+        } else {
+            // Válido: quitar rojo, restaurar hint original
+            inputElement.classList.remove("error-field");
+            hintElement.classList.remove("error-hint");
+            hintElement.innerHTML = mensajeOriginal;
+        }
+    }
+
+    // Mensajes originales (cuando está correcto)
+    const mensajesOriginales = {
+        nombre: "✔ Mínimo 12 caracteres",
+        grado: "📚 Selecciona tu grado",
+        whatsapp: "📱 10 dígitos numéricos",
+        email: "✉️ Termina en @gmail.com",
+        password: "🔐 Empieza con mayúscula + mínimo 8 caracteres"
+    };
+
+    // Función que valida TODOS los campos y actualiza la UI
+    // Retorna true si todos son válidos, false si hay al menos un error
+    function validarYRefrescarUI() {
+        const nombreVal = validarNombre(nombreInput.value);
+        const gradoVal = validarGrado(gradoSelect.value);
+        const whatsappVal = validarWhatsapp(whatsappInput.value);
+        const emailVal = validarEmail(emailInput.value);
+        const passwordVal = validarPassword(passwordInput.value);
+
+        actualizarCampo(nombreInput, nombreHint, nombreVal, mensajesOriginales.nombre);
+        actualizarCampo(gradoSelect, gradoHint, gradoVal, mensajesOriginales.grado);
+        actualizarCampo(whatsappInput, whatsappHint, whatsappVal, mensajesOriginales.whatsapp);
+        actualizarCampo(emailInput, emailHint, emailVal, mensajesOriginales.email);
+        actualizarCampo(passwordInput, passwordHint, passwordVal, mensajesOriginales.password);
+
+        return (nombreVal.valid && gradoVal.valid && whatsappVal.valid && emailVal.valid && passwordVal.valid);
+    }
+
+    // -------- EVENTOS EN TIEMPO REAL (input, blur, change) ----------
+    // Cada vez que el usuario escribe o cambia de campo, se valida y se pinta rojo si no cumple.
+    nombreInput.addEventListener("input", () => validarYRefrescarUI());
+    nombreInput.addEventListener("blur", () => validarYRefrescarUI());
+    
+    gradoSelect.addEventListener("change", () => validarYRefrescarUI());
+    
+    // WhatsApp: solo números, longitud máxima 10
+    whatsappInput.addEventListener("input", (e) => {
+        let soloNumeros = e.target.value.replace(/\D/g, "");
+        if (soloNumeros.length > 10) soloNumeros = soloNumeros.slice(0, 10);
+        e.target.value = soloNumeros;
+        validarYRefrescarUI();
+    });
+    whatsappInput.addEventListener("blur", () => validarYRefrescarUI());
+    
+    emailInput.addEventListener("input", () => validarYRefrescarUI());
+    emailInput.addEventListener("blur", () => validarYRefrescarUI());
+    
+    passwordInput.addEventListener("input", () => validarYRefrescarUI());
+    passwordInput.addEventListener("blur", () => validarYRefrescarUI());
+
+    // Pequeña validación inicial para que al cargar no tenga errores visuales hasta que el usuario interactúe
+    // Pero dejamos que se ejecute blur al inicio? No, mejor solo limpiamos clases.
+    // Al hacer submit se valida completo.
+
+    // -------- REGISTRO CON SUPABASE ----------
+    async function ejecutarRegistro() {
+        // 1. Validar TODOS los campos otra vez justo antes de registrar
+        const formularioValido = validarYRefrescarUI();
+        
+        if (!formularioValido) {
+            // Mostrar la notificación exacta: "No cumple el requisito"
+            showToast("No cumple el requisito", "error");
+            // Opcional: hacer focus en el primer campo con error
+            const primerError = document.querySelector(".error-field");
+            if (primerError) primerError.focus();
+            return;
+        }
+
+        // Si todo es válido, obtener valores limpios
+        const nombre = nombreInput.value.trim();
+        const grado = gradoSelect.value;
+        const whatsapp = whatsappInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        // Bloquear botón para evitar doble envío
+        submitBtn.disabled = true;
+        const textoOriginal = submitBtn.textContent;
+        submitBtn.textContent = "Registrando...";
+
+        try {
+            // Simular registro exitoso (quitar signUp por ahora para evitar errores)
+            // const { data, error: signUpError } = await supabase.auth.signUp({
+            //     email: email,
+            //     password: password
+            // });
+
+            // if (signUpError) {
+            //     console.error("Error en signUp:", signUpError);
+            //     showToast(signUpError.message || "Error al registrar", "error");
+            //     submitBtn.disabled = false;
+            //     submitBtn.textContent = textoOriginal;
+            //     return;
+            // }
+
+            // const userId = data?.user?.id;
+            // if (!userId) throw new Error("No se obtuvo ID");
+
+            // ✅ ÉXITO: formulario completo y cumple requisitos
+            // Mostrar notificación exacta: "LISTO, VAMOS PARA LA VERIFICACIÓN"
+            showToast("LISTO, VAMOS PARA LA VERIFICACIÓN", "success");
+            
+            // Generar código de 5 dígitos
+            const verificationCode = String(Math.floor(Math.random() * 90000) + 10000);
+            localStorage.setItem("codigo_verificacion", verificationCode);
+            
+            submitBtn.textContent = "Preparando verificación...";
+            
+            // Esperar 5 segundos y redirigir
+            setTimeout(() => {
+                window.location.href = "../verificacion.html";
+            }, 5000);
+
+        } catch (err) {
+            console.error("Error inesperado:", err);
+            showToast("No cumple el requisito", "error");
+            submitBtn.disabled = false;
+            submitBtn.textContent = textoOriginal;
+        }
+    }
+
+    // Evento clic del botón Registrar
+    submitBtn.addEventListener("click", ejecutarRegistro);
+
+    // Opcional: Al presionar Enter en cualquier campo, simular clic en botón
+    const form = document.getElementById("registroForm");
+    form.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            ejecutarRegistro();
+        }
+    });
+</script>
+</body>
+</html>
