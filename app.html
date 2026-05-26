@@ -59,10 +59,11 @@
         .header {
             background: var(--negro);
             border-bottom: 1px solid rgba(16, 185, 129, 0.1);
-            padding: 1rem 2rem;
+            padding: 0.75rem 2rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -73,67 +74,39 @@
             align-items: center;
             gap: 0.75rem;
             text-decoration: none;
+            flex-shrink: 0;
         }
 
         .logo-icon {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 900;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--negro);
         }
 
         .logo-text {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--blanco);
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-name {
-            color: var(--verde-claro);
-            font-weight: 600;
-        }
-
-        .logout-btn {
-            padding: 0.5rem 1rem;
-            background: transparent;
-            border: 1px solid var(--gris-claro);
-            color: var(--blanco);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .logout-btn:hover {
-            border-color: var(--verde-principal);
-            color: var(--verde-principal);
-        }
-
-        /* ========== NAV ========== */
-        .nav {
-            background: var(--negro);
-            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
-            padding: 0 2rem;
+        /* ========== NAV INLINE ========== */
+        .nav-inline {
+            flex: 1;
         }
 
         .nav-list {
             display: flex;
-            gap: 2rem;
+            gap: 0.5rem;
             list-style: none;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 0;
+            padding: 0;
+            margin: 0;
         }
 
         .nav-item {
@@ -143,12 +116,308 @@
             transition: all 0.3s ease;
             color: var(--blanco);
             font-weight: 500;
+            white-space: nowrap;
+            font-size: 0.95rem;
         }
 
         .nav-item:hover,
         .nav-item.active {
             background: var(--verde-principal);
             color: var(--negro);
+        }
+
+        /* ========== USER INFO ========== */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        /* ========== RACHA ========== */
+        .racha-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 0.35rem 0.75rem;
+            cursor: default;
+            transition: all 0.3s;
+        }
+
+        .racha-wrap.activa {
+            background: rgba(255, 120, 0, 0.15);
+            border-color: rgba(255, 120, 0, 0.5);
+            box-shadow: 0 0 12px rgba(255, 120, 0, 0.25);
+        }
+
+        .racha-fuego {
+            font-size: 1.1rem;
+            filter: grayscale(1) opacity(0.4);
+            transition: filter 0.4s;
+        }
+
+        .racha-wrap.activa .racha-fuego {
+            filter: none;
+            animation: fuegoPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes fuegoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .racha-num {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #aaa;
+            transition: color 0.3s;
+        }
+
+        .racha-wrap.activa .racha-num {
+            color: #ff7800;
+        }
+
+        /* ========== PERFIL ========== */
+        .perfil-wrap {
+            position: relative;
+        }
+
+        .perfil-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(16,185,129,0.15);
+            border: 2px solid var(--verde-principal);
+            color: var(--verde-claro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .perfil-btn:hover {
+            background: rgba(16,185,129,0.3);
+            transform: scale(1.05);
+        }
+
+        .perfil-dropdown {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: #202020;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 0;
+            min-width: 260px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 200;
+        }
+
+        .perfil-dropdown.open {
+            display: flex;
+            animation: scaleIn 0.2s ease-out;
+        }
+
+        /* Cabecera del perfil estilo Chrome */
+        .perfil-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem 1rem;
+            gap: 0.6rem;
+            background: #282828;
+        }
+
+        .perfil-avatar-grande {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4a4a5a, #2a2a3a);
+            border: 2px solid rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+        }
+
+        .perfil-nombre {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
+
+        .perfil-email {
+            color: #aaa;
+            font-size: 0.82rem;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .perfil-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            margin: 0;
+        }
+
+        .perfil-opciones {
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem;
+            gap: 0.1rem;
+        }
+
+        .perfil-option {
+            background: transparent;
+            border: none;
+            color: var(--blanco);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .perfil-option:hover {
+            background: rgba(255,255,255,0.07);
+        }
+
+        .perfil-option.danger {
+            color: #ff6b6b;
+        }
+
+        .perfil-option.danger:hover {
+            background: rgba(255,107,107,0.08);
+        }
+
+        /* ========== RACHA MODAL ========== */
+        .racha-wrap {
+            cursor: pointer;
+        }
+
+        .racha-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 300;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding-top: 60px;
+            padding-right: 80px;
+        }
+
+        .racha-modal-overlay.open {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .racha-modal {
+            background: #202020;
+            border: 1px solid rgba(255,120,0,0.25);
+            border-radius: 16px;
+            padding: 0;
+            min-width: 240px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+            overflow: hidden;
+            animation: scaleIn 0.2s ease-out;
+        }
+
+        .racha-modal-header {
+            background: linear-gradient(135deg, rgba(255,120,0,0.2), rgba(255,80,0,0.1));
+            padding: 1.2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .racha-modal-fuego {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+
+        .racha-modal-dias {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #ff7800;
+        }
+
+        .racha-modal-label {
+            font-size: 0.82rem;
+            color: #aaa;
+            text-align: center;
+        }
+
+        .racha-modal-body {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .racha-vidas {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .racha-vidas-label {
+            font-size: 0.85rem;
+            color: #ccc;
+            flex: 1;
+        }
+
+        .racha-corazones {
+            display: flex;
+            gap: 0.3rem;
+            font-size: 1.2rem;
+        }
+
+        .racha-corazon.perdido {
+            filter: grayscale(1) opacity(0.35);
+        }
+
+        .racha-modal-info {
+            font-size: 0.78rem;
+            color: #666;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .racha-modal-cerrar {
+            width: 100%;
+            padding: 0.7rem;
+            background: rgba(255,120,0,0.15);
+            border: none;
+            border-top: 1px solid rgba(255,120,0,0.2);
+            color: #ff7800;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .racha-modal-cerrar:hover {
+            background: rgba(255,120,0,0.25);
         }
 
         /* ========== MAIN ========== */
@@ -267,35 +536,18 @@
         }
 
         /* ========== RESPONSIVE ========== */
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .header {
-                padding: 1rem;
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-list {
                 flex-wrap: wrap;
-                gap: 1rem;
-                padding: 0.5rem 0;
+                padding: 0.75rem 1rem;
+                gap: 0.75rem;
             }
-
-            .nav-item {
-                padding: 0.5rem;
-                font-size: 0.9rem;
-            }
-
-            .main {
-                padding: 1rem;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section-title {
-                font-size: 1.5rem;
-            }
+            .nav-inline { order: 3; width: 100%; }
+            .nav-list { flex-wrap: wrap; gap: 0.4rem; }
+            .nav-item { font-size: 0.85rem; padding: 0.4rem 0.75rem; }
+            .main { padding: 1rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -305,20 +557,82 @@
             <div class="logo-icon">S11</div>
             <div class="logo-text">ICFES</div>
         </a>
+
+        <nav class="nav-inline">
+            <ul class="nav-list">
+                <li class="nav-item active" data-category="icfes">ICFES Tema General</li>
+                <li class="nav-item" data-category="retos">Retos</li>
+                <li class="nav-item" data-category="simulacros">Simulacros</li>
+                <li class="nav-item" data-category="preguntas">Preguntas Rápidas</li>
+            </ul>
+        </nav>
+
         <div class="user-info">
-            <span class="user-name" id="user-name">Cargando...</span>
-            <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+            <!-- Racha de fuego -->
+            <div class="racha-wrap" id="racha-wrap" title="Ver racha">
+                <span class="racha-fuego" id="racha-fuego">🔥</span>
+                <span class="racha-num" id="racha-num">0</span>
+            </div>
+
+            <!-- Avatar perfil -->
+            <div class="perfil-wrap">
+                <button class="perfil-btn" id="perfil-btn" aria-label="Perfil">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                </button>
+                <div class="perfil-dropdown" id="perfil-dropdown">
+                    <!-- Cabecera estilo Chrome -->
+                    <div class="perfil-header">
+                        <div class="perfil-avatar-grande">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                            </svg>
+                        </div>
+                        <div class="perfil-nombre" id="perfil-nombre">Cargando...</div>
+                        <div class="perfil-email" id="perfil-email">cargando...</div>
+                    </div>
+                    <hr class="perfil-divider">
+                    <div class="perfil-opciones">
+                        <button class="perfil-option" id="config-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                            Configuración
+                        </button>
+                        <button class="perfil-option danger" id="logout-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <nav class="nav">
-        <ul class="nav-list">
-            <li class="nav-item active" data-category="icfes">ICFES Tema General</li>
-            <li class="nav-item" data-category="retos">Retos</li>
-            <li class="nav-item" data-category="simulacros">Simulacros</li>
-            <li class="nav-item" data-category="preguntas">Preguntas Rápidas</li>
-        </ul>
-    </nav>
+    <!-- Modal Racha -->
+    <div class="racha-modal-overlay" id="racha-modal-overlay">
+        <div class="racha-modal" id="racha-modal">
+            <div class="racha-modal-header">
+                <div class="racha-modal-fuego">🔥</div>
+                <div class="racha-modal-dias" id="modal-dias">0</div>
+                <div class="racha-modal-label">días de racha</div>
+            </div>
+            <div class="racha-modal-body">
+                <div class="racha-vidas">
+                    <span class="racha-vidas-label">❤️ Vidas restantes</span>
+                    <div class="racha-corazones" id="racha-corazones">
+                        <span class="racha-corazon">❤️</span>
+                        <span class="racha-corazon">❤️</span>
+                    </div>
+                </div>
+                <div class="racha-modal-info" id="racha-modal-info">
+                    Completa el Reto del día para mantener tu racha activa.
+                </div>
+            </div>
+            <button class="racha-modal-cerrar" id="racha-modal-cerrar">Entendido</button>
+        </div>
+    </div>
 
     <main class="main">
         <section class="content-section active" id="icfes">
@@ -433,40 +747,177 @@
     <script type="module">
         import { supabase } from './js/supabase.js';
 
-        // Verificar sesión al cargar
+        // ===== SESIÓN =====
         async function checkSession() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
                 window.location.href = 'iniciarsesion.html';
                 return;
             }
-            // Mostrar nombre del usuario
-            const userName = session.user.user_metadata?.name || session.user.email;
-            document.getElementById('user-name').textContent = userName;
+            const email = session.user.email;
+            // Nombre desde metadata guardado en el registro
+            const nombreRaw = session.user.user_metadata?.name
+                           || session.user.user_metadata?.full_name
+                           || '';
+            // Capitalizar cada palabra: "joseph enrique" → "Joseph Enrique"
+            const nombre = nombreRaw
+                .toLowerCase()
+                .split(' ')
+                .filter(Boolean)
+                .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+                .join(' ') || email;
+            document.getElementById('perfil-nombre').textContent = nombre;
+            document.getElementById('perfil-email').textContent = email;
         }
 
-        // Manejar navegación
+        // ===== NAVEGACIÓN =====
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
-                // Remover active de todos
-                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-                document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
-
-                // Agregar active al seleccionado
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
                 item.classList.add('active');
-                const category = item.dataset.category;
-                document.getElementById(category).classList.add('active');
+                document.getElementById(item.dataset.category).classList.add('active');
             });
         });
 
-        // Manejar logout
+        // ===== DROPDOWN PERFIL =====
+        const perfilBtn = document.getElementById('perfil-btn');
+        const perfilDropdown = document.getElementById('perfil-dropdown');
+
+        perfilBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            perfilDropdown.classList.toggle('open');
+            // Cerrar modal racha si está abierto
+            document.getElementById('racha-modal-overlay').classList.remove('open');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.perfil-wrap')) {
+                perfilDropdown.classList.remove('open');
+            }
+        });
+
         document.getElementById('logout-btn').addEventListener('click', async () => {
             await supabase.auth.signOut();
             window.location.href = 'index.html';
         });
 
-        // Inicializar
+        document.getElementById('config-btn').addEventListener('click', () => {
+            alert('Configuración próximamente');
+            perfilDropdown.classList.remove('open');
+        });
+
+        // ===== RACHA =====
+        function cargarRacha() {
+            const ultimoDia = localStorage.getItem('racha_ultimo_dia');
+            let dias = parseInt(localStorage.getItem('racha_dias') || '0');
+            let vidas = parseInt(localStorage.getItem('racha_vidas') ?? '2');
+
+            if (ultimoDia) {
+                const ultimo = new Date(ultimoDia);
+                const hoyDate = new Date();
+                // Normalizar a medianoche para contar días correctamente
+                ultimo.setHours(0,0,0,0);
+                hoyDate.setHours(0,0,0,0);
+                const diffDias = Math.floor((hoyDate - ultimo) / (1000 * 60 * 60 * 24));
+
+                if (diffDias >= 1 && ultimoDia !== new Date().toDateString()) {
+                    // Pasó al menos un día sin jugar
+                    if (vidas > 0) {
+                        vidas -= 1;
+                        localStorage.setItem('racha_vidas', vidas.toString());
+                        if (vidas === 0) {
+                            // Sin vidas: reiniciar racha
+                            dias = 0;
+                            vidas = 2;
+                            localStorage.setItem('racha_dias', '0');
+                            localStorage.setItem('racha_vidas', '2');
+                            localStorage.removeItem('racha_ultimo_dia');
+                        }
+                    }
+                }
+            }
+
+            actualizarRachaUI(dias, vidas);
+        }
+
+        function actualizarRachaUI(dias, vidas) {
+            vidas = vidas ?? parseInt(localStorage.getItem('racha_vidas') ?? '2');
+            const wrap = document.getElementById('racha-wrap');
+            document.getElementById('racha-num').textContent = dias;
+            document.getElementById('modal-dias').textContent = dias;
+
+            // Corazones en el modal
+            const corazonesEl = document.getElementById('racha-corazones');
+            corazonesEl.innerHTML = '';
+            for (let i = 0; i < 2; i++) {
+                const c = document.createElement('span');
+                c.className = 'racha-corazon' + (i >= vidas ? ' perdido' : '');
+                c.textContent = '❤️';
+                corazonesEl.appendChild(c);
+            }
+
+            // Info del modal
+            const info = document.getElementById('racha-modal-info');
+            if (dias === 0) {
+                info.textContent = 'Completa el Reto del día para encender tu racha 🔥';
+                wrap.classList.remove('activa');
+            } else if (vidas < 2) {
+                info.textContent = `¡Cuidado! Te queda ${vidas} vida${vidas === 1 ? '' : 's'}. Juega hoy para no perder la racha.`;
+                wrap.classList.add('activa');
+            } else {
+                info.textContent = `¡Llevas ${dias} día${dias === 1 ? '' : 's'} seguido${dias === 1 ? '' : 's'}! Sigue así 💪`;
+                wrap.classList.add('activa');
+            }
+
+            // Fuego apagado/encendido
+            if (dias === 0) wrap.classList.remove('activa');
+        }
+
+        // Completar reto del día: suma racha y restaura vidas
+        window.completarRetoDia = function() {
+            const hoy = new Date().toDateString();
+            const ultimoDia = localStorage.getItem('racha_ultimo_dia');
+            if (ultimoDia === hoy) return; // Ya jugó hoy
+
+            let dias = parseInt(localStorage.getItem('racha_dias') || '0');
+            dias += 1;
+            localStorage.setItem('racha_dias', dias.toString());
+            localStorage.setItem('racha_ultimo_dia', hoy);
+            localStorage.setItem('racha_vidas', '2'); // restaurar vidas al jugar
+            actualizarRachaUI(dias, 2);
+        };
+
+        // ===== MODAL RACHA al clic en fuego =====
+        const rachaWrap = document.getElementById('racha-wrap');
+        const rachaOverlay = document.getElementById('racha-modal-overlay');
+
+        rachaWrap.addEventListener('click', (e) => {
+            e.stopPropagation();
+            perfilDropdown.classList.remove('open');
+            rachaOverlay.classList.toggle('open');
+        });
+
+        document.getElementById('racha-modal-cerrar').addEventListener('click', () => {
+            rachaOverlay.classList.remove('open');
+        });
+
+        rachaOverlay.addEventListener('click', (e) => {
+            if (e.target === rachaOverlay) rachaOverlay.classList.remove('open');
+        });
+
+        // Botón Comenzar del Reto del día
+        document.querySelectorAll('#retos .card-btn').forEach((btn, i) => {
+            if (i === 0) {
+                btn.addEventListener('click', () => {
+                    window.completarRetoDia();
+                });
+            }
+        });
+
+        // ===== INIT =====
         checkSession();
+        cargarRacha();
     </script>
 </body>
 </html>

@@ -230,7 +230,7 @@
 <div id="toastWrap" class="toast-wrap" aria-live="polite"></div>
 
 <main class="card">
-    <h1>Registro ICFES Tecnico Superior </h1>
+    <h1>Registro TU RITMO AL 500</h1>
     <p class="subtitle">Completa todos los campos correctamente.</p>
 
     <form id="registroForm" novalidate>
@@ -457,7 +457,13 @@
             // 1. Crear usuario en Supabase Auth
             const { data, error: signUpError } = await supabase.auth.signUp({
                 email: email,
-                password: password
+                password: password,
+                options: {
+                    data: {
+                        name: nombre,
+                        full_name: nombre
+                    }
+                }
             });
 
             if (signUpError) {
@@ -491,13 +497,13 @@
             }
 
             // 3. ✅ ÉXITO: usuario y perfil guardados correctamente
-            showToast("LISTO, VAMOS PARA LA VERIFICACIÓN", "success");
-            submitBtn.textContent = "Preparando verificación...";
+            showToast("¡LISTO! Ya puedes iniciar sesión 🎉", "success");
+            submitBtn.textContent = "¡Registro exitoso!";
 
-            // Esperar 5 segundos y redirigir
+            // Redirigir a iniciar sesión
             setTimeout(() => {
-                window.location.href = "../verificacion.html";
-            }, 5000);
+                window.location.href = "../iniciarsesion.html";
+            }, 2000);
 
         } catch (err) {
             console.error("Error inesperado:", err);

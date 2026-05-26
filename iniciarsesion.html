@@ -176,6 +176,34 @@
             text-decoration: underline;
         }
 
+        /* Wrapper contraseña con ojo */
+        .password-wrap {
+            position: relative;
+        }
+
+        .password-wrap input {
+            padding-right: 44px;
+        }
+
+        .toggle-pass {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .toggle-pass:hover {
+            color: var(--primary-green);
+        }
+
         /* TOAST NOTIFICACIONES */
         .toast-wrap {
             position: fixed;
@@ -238,7 +266,15 @@
 
         <div class="form-group">
             <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" placeholder="Tu contraseña">
+            <div class="password-wrap">
+                <input type="password" id="password" name="password" placeholder="Tu contraseña">
+                <button type="button" class="toggle-pass" id="togglePass" aria-label="Ver contraseña">
+                    <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </button>
+            </div>
             <div class="hint" id="passwordHint">Ingresa tu contraseña</div>
         </div>
 
@@ -279,8 +315,8 @@
         if (trimmed === "") {
             return { valid: false, errorMsg: "Correo requerido" };
         }
-        if (!trimmed.endsWith("@gmail.com")) {
-            return { valid: false, errorMsg: "Debe ser @gmail.com" };
+        if (!trimmed.includes("@") || !trimmed.includes(".")) {
+            return { valid: false, errorMsg: "Correo inválido" };
         }
         return { valid: true, errorMsg: "" };
     }
@@ -322,12 +358,24 @@
         return emailVal.valid && passwordVal.valid;
     }
 
-    // -------- EVENTOS EN TIEMPO REAL ----------
+    // Validar al escribir Y al salir del campo
     emailInput.addEventListener("input", () => validarYRefrescarUI());
     emailInput.addEventListener("blur", () => validarYRefrescarUI());
-
     passwordInput.addEventListener("input", () => validarYRefrescarUI());
     passwordInput.addEventListener("blur", () => validarYRefrescarUI());
+
+    // Botón mostrar/ocultar contraseña
+    document.getElementById("togglePass").addEventListener("click", () => {
+        const input = document.getElementById("password");
+        const icon = document.getElementById("eyeIcon");
+        if (input.type === "password") {
+            input.type = "text";
+            icon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+        } else {
+            input.type = "password";
+            icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        }
+    });
 
     // -------- LOGIN CON SUPABASE ----------
     async function ejecutarLogin() {
@@ -367,7 +415,20 @@
 
             if (error) {
                 console.error("Error en login:", error);
-                showToast(error.message || "Error al iniciar sesión", "error");
+                const msg = (error.message || "").toLowerCase();
+                let msgFinal;
+                if (msg.includes("email not confirmed") || msg.includes("not confirmed")) {
+                    msgFinal = "Correo o contraseña incorrectos";
+                } else if (msg.includes("invalid login") || msg.includes("invalid credentials") || msg.includes("wrong")) {
+                    msgFinal = "Correo o contraseña incorrectos";
+                } else if (msg.includes("too many") || msg.includes("rate limit")) {
+                    msgFinal = "Demasiados intentos, espera un momento";
+                } else if (msg.includes("user not found") || msg.includes("no user")) {
+                    msgFinal = "No existe una cuenta con ese correo";
+                } else {
+                    msgFinal = "Error al iniciar sesión, inténtalo de nuevo";
+                }
+                showToast(msgFinal, "error");
                 submitBtn.disabled = false;
                 submitBtn.textContent = textoOriginal;
                 return;
