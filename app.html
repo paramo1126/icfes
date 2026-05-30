@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICFES Técnico Superior - App</title>
+    <title>ICFES — Tu Ritmo al 500</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ========== RESET Y BASE ========== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+
+        /* ============================================================
+           RESET Y BASE
+        ============================================================ */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'DM Sans', sans-serif;
@@ -20,433 +19,349 @@
             min-height: 100vh;
         }
 
-        /* ========== VARIABLES ========== */
+        /* ============================================================
+           VARIABLES DE COLOR  (editar aquí cambia todo)
+        ============================================================ */
         :root {
             --verde-principal: #10B981;
-            --verde-claro: #34D399;
-            --verde-oscuro: #059669;
-            --negro: #0a0a0a;
-            --gris-oscuro: #1a1a1a;
-            --gris: #2a2a2a;
-            --gris-claro: #3a3a3a;
-            --blanco: #ffffff;
+            --verde-claro:     #34D399;
+            --verde-oscuro:    #059669;
+            --negro:           #0a0a0a;
+            --gris-oscuro:     #1a1a1a;
+            --gris:            #2a2a2a;
+            --gris-claro:      #3a3a3a;
+            --blanco:          #ffffff;
+            --naranja:         #ff7800;
         }
 
-        /* ========== ANIMACIONES ========== */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* ============================================================
+           ANIMACIONES GLOBALES
+        ============================================================ */
+        @keyframes fadeIn    { from { opacity: 0; }                        to { opacity: 1; } }
+        @keyframes fadeInUp  { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn   { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fuegoPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* ============================================================
+           HAMBURGER BUTTON
+        ============================================================ */
+        .hamburger-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        .hamburger-btn:hover {
+            background: rgba(16,185,129,0.16);
+            border-color: rgba(16,185,129,0.45);
+        }
+        .hamburger-btn span {
+            display: block;
+            width: 18px;
+            height: 2px;
+            background: var(--verde-claro);
+            border-radius: 2px;
+            transition: all 0.32s cubic-bezier(0.4,0,0.2,1);
+        }
+        /* Animación X al abrir */
+        .hamburger-btn.abierto span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger-btn.abierto span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger-btn.abierto span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        /* ============================================================
+           SIDEBAR OVERLAY (fondo oscuro al abrir)
+        ============================================================ */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            z-index: 500;
+            pointer-events: none;
+            transition: background 0.3s;
+        }
+        .sidebar-overlay.abierto {
+            background: rgba(0,0,0,0.65);
+            pointer-events: all;
         }
 
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        /* ============================================================
+           SIDEBAR (menú lateral)
+        ============================================================ */
+        .sidebar {
+            position: absolute;
+            top: 0; left: 0;
+            height: 100%;
+            width: 270px;
+            background: #111111;
+            border-right: 1px solid rgba(16,185,129,0.12);
+            transform: translateX(-100%);
+            transition: transform 0.36s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            box-shadow: 6px 0 30px rgba(0,0,0,0.5);
         }
+        .sidebar-overlay.abierto .sidebar { transform: translateX(0); }
 
-        /* ========== HEADER ========== */
-        .header {
-            background: var(--negro);
-            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
-            padding: 0.75rem 2rem;
+        /* Encabezado del sidebar */
+        .sidebar-head {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1.5rem;
+            padding: 1rem 1rem 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+        }
+        .sidebar-logo-icon {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 0.85rem; color: var(--negro);
+        }
+        .sidebar-logo-texto { font-size: 0.95rem; font-weight: 700; color: var(--blanco); }
+        .sidebar-cerrar {
+            width: 28px; height: 28px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 7px;
+            color: #888; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; transition: all 0.2s;
+        }
+        .sidebar-cerrar:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        /* Etiqueta de grupo */
+        .sidebar-grupo {
+            padding: 0.9rem 1rem 0.3rem;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #444;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        /* Ítems de navegación */
+        .sidebar-nav { list-style: none; padding: 0 0.5rem; display: flex; flex-direction: column; gap: 2px; }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0.9rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.22s;
+            color: #bbb;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .sidebar-item:hover  { background: rgba(255,255,255,0.06); color: #fff; }
+        .sidebar-item.activo { background: rgba(16,185,129,0.1); color: var(--verde-claro); border: 1px solid rgba(16,185,129,0.18); }
+        .sidebar-item-icono  { font-size: 1.1rem; width: 24px; text-align: center; flex-shrink: 0; }
+
+        /* ============================================================
+           HEADER
+        ============================================================ */
+        .header {
+            background: var(--negro);
+            border-bottom: 1px solid rgba(16,185,129,0.1);
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
             position: sticky;
             top: 0;
             z-index: 100;
         }
+        .header-izquierda { display: flex; align-items: center; gap: 0.75rem; }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            flex-shrink: 0;
+            display: flex; align-items: center; gap: 0.75rem;
+            text-decoration: none; flex-shrink: 0;
         }
-
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 1.1rem;
-            color: var(--negro);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.1rem; color: var(--negro);
         }
+        .logo-text { font-size: 1.3rem; font-weight: 700; color: var(--blanco); }
 
-        .logo-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--blanco);
-        }
+        /* ============================================================
+           USER INFO (derecha del header)
+        ============================================================ */
+        .user-info { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
 
-        /* ========== NAV INLINE ========== */
-        .nav-inline {
-            flex: 1;
-        }
-
-        .nav-list {
-            display: flex;
-            gap: 0.5rem;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .nav-item {
-            cursor: pointer;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            color: var(--blanco);
-            font-weight: 500;
-            white-space: nowrap;
-            font-size: 0.95rem;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background: var(--verde-principal);
-            color: var(--negro);
-        }
-
-        /* ========== USER INFO ========== */
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-shrink: 0;
-        }
-
-        /* ========== RACHA ========== */
+        /* ============================================================
+           RACHA (fuego)
+        ============================================================ */
         .racha-wrap {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
+            display: flex; align-items: center; gap: 0.3rem;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
             padding: 0.35rem 0.75rem;
-            cursor: default;
+            cursor: pointer;
             transition: all 0.3s;
         }
-
         .racha-wrap.activa {
-            background: rgba(255, 120, 0, 0.15);
-            border-color: rgba(255, 120, 0, 0.5);
-            box-shadow: 0 0 12px rgba(255, 120, 0, 0.25);
+            background: rgba(255,120,0,0.15);
+            border-color: rgba(255,120,0,0.5);
+            box-shadow: 0 0 12px rgba(255,120,0,0.25);
         }
-
         .racha-fuego {
             font-size: 1.1rem;
             filter: grayscale(1) opacity(0.4);
             transition: filter 0.4s;
         }
+        .racha-wrap.activa .racha-fuego { filter: none; animation: fuegoPulse 1.5s ease-in-out infinite; }
+        .racha-num { font-weight: 700; font-size: 0.9rem; color: #aaa; transition: color 0.3s; }
+        .racha-wrap.activa .racha-num { color: var(--naranja); }
 
-        .racha-wrap.activa .racha-fuego {
-            filter: none;
-            animation: fuegoPulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes fuegoPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .racha-num {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: #aaa;
-            transition: color 0.3s;
-        }
-
-        .racha-wrap.activa .racha-num {
-            color: #ff7800;
-        }
-
-        /* ========== PERFIL ========== */
-        .perfil-wrap {
-            position: relative;
-        }
+        /* ============================================================
+           PERFIL (dropdown)
+        ============================================================ */
+        .perfil-wrap { position: relative; }
 
         .perfil-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 40px; height: 40px; border-radius: 50%;
             background: rgba(16,185,129,0.15);
             border: 2px solid var(--verde-principal);
             color: var(--verde-claro);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s ease;
         }
-
-        .perfil-btn:hover {
-            background: rgba(16,185,129,0.3);
-            transform: scale(1.05);
-        }
+        .perfil-btn:hover { background: rgba(16,185,129,0.3); transform: scale(1.05); }
 
         .perfil-dropdown {
-            position: absolute;
-            top: calc(100% + 12px);
-            right: 0;
+            position: absolute; top: calc(100% + 12px); right: 0;
             background: #202020;
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 0;
+            border-radius: 16px; padding: 0;
             min-width: 260px;
             box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 200;
+            display: none; flex-direction: column;
+            overflow: hidden; z-index: 200;
         }
+        .perfil-dropdown.open { display: flex; animation: scaleIn 0.2s ease-out; }
 
-        .perfil-dropdown.open {
-            display: flex;
-            animation: scaleIn 0.2s ease-out;
-        }
-
-        /* Cabecera del perfil estilo Chrome */
         .perfil-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1.5rem 1rem 1rem;
-            gap: 0.6rem;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 1.5rem 1rem 1rem; gap: 0.6rem;
             background: #282828;
         }
-
         .perfil-avatar-grande {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
+            width: 64px; height: 64px; border-radius: 50%;
             background: linear-gradient(135deg, #4a4a5a, #2a2a3a);
             border: 2px solid rgba(255,255,255,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #aaa;
+            display: flex; align-items: center; justify-content: center; color: #aaa;
         }
-
-        .perfil-nombre {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-            text-align: center;
-        }
-
-        .perfil-email {
-            color: #aaa;
-            font-size: 0.82rem;
-            text-align: center;
-            word-break: break-all;
-        }
-
-        .perfil-divider {
-            border: none;
-            border-top: 1px solid rgba(255,255,255,0.07);
-            margin: 0;
-        }
-
-        .perfil-opciones {
-            display: flex;
-            flex-direction: column;
-            padding: 0.5rem;
-            gap: 0.1rem;
-        }
-
+        .perfil-nombre  { font-size: 1rem;   font-weight: 700; color: #fff;  text-align: center; }
+        .perfil-email   { color: #aaa; font-size: 0.82rem; text-align: center; word-break: break-all; }
+        .perfil-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 0; }
+        .perfil-opciones { display: flex; flex-direction: column; padding: 0.5rem; gap: 0.1rem; }
         .perfil-option {
-            background: transparent;
-            border: none;
-            color: var(--blanco);
-            padding: 0.75rem 1rem;
-            text-align: left;
-            cursor: pointer;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            transition: background 0.2s;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+            background: transparent; border: none; color: var(--blanco);
+            padding: 0.75rem 1rem; text-align: left; cursor: pointer;
+            border-radius: 10px; font-size: 0.9rem; transition: background 0.2s;
+            font-family: inherit; display: flex; align-items: center; gap: 0.75rem;
         }
+        .perfil-option:hover { background: rgba(255,255,255,0.07); }
+        .perfil-option.danger { color: #ff6b6b; }
+        .perfil-option.danger:hover { background: rgba(255,107,107,0.08); }
 
-        .perfil-option:hover {
-            background: rgba(255,255,255,0.07);
-        }
-
-        .perfil-option.danger {
-            color: #ff6b6b;
-        }
-
-        .perfil-option.danger:hover {
-            background: rgba(255,107,107,0.08);
-        }
-
-        /* ========== RACHA MODAL ========== */
-        .racha-wrap {
-            cursor: pointer;
-        }
-
+        /* ============================================================
+           MODAL RACHA
+        ============================================================ */
         .racha-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 300;
-            display: none;
-            align-items: flex-start;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6); z-index: 300;
+            display: none; align-items: flex-start;
             justify-content: flex-end;
-            padding-top: 60px;
-            padding-right: 80px;
+            padding-top: 60px; padding-right: 80px;
         }
-
-        .racha-modal-overlay.open {
-            display: flex;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .racha-modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
 
         .racha-modal {
             background: #202020;
             border: 1px solid rgba(255,120,0,0.25);
-            border-radius: 16px;
-            padding: 0;
+            border-radius: 16px; padding: 0;
             min-width: 240px;
             box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-            overflow: hidden;
-            animation: scaleIn 0.2s ease-out;
+            overflow: hidden; animation: scaleIn 0.2s ease-out;
         }
-
         .racha-modal-header {
             background: linear-gradient(135deg, rgba(255,120,0,0.2), rgba(255,80,0,0.1));
             padding: 1.2rem 1rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.3rem;
+            display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
         }
-
-        .racha-modal-fuego {
-            font-size: 2.5rem;
-            line-height: 1;
-        }
-
-        .racha-modal-dias {
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #ff7800;
-        }
-
-        .racha-modal-label {
-            font-size: 0.82rem;
-            color: #aaa;
-            text-align: center;
-        }
-
-        .racha-modal-body {
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
+        .racha-modal-fuego  { font-size: 2.5rem; line-height: 1; }
+        .racha-modal-dias   { font-size: 1.8rem; font-weight: 900; color: var(--naranja); }
+        .racha-modal-label  { font-size: 0.82rem; color: #aaa; text-align: center; }
+        .racha-modal-body   { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
         .racha-vidas {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 0.6rem 0.8rem;
+            display: flex; align-items: center; gap: 0.5rem;
+            background: rgba(255,255,255,0.05); border-radius: 10px; padding: 0.6rem 0.8rem;
         }
-
-        .racha-vidas-label {
-            font-size: 0.85rem;
-            color: #ccc;
-            flex: 1;
-        }
-
-        .racha-corazones {
-            display: flex;
-            gap: 0.3rem;
-            font-size: 1.2rem;
-        }
-
-        .racha-corazon.perdido {
-            filter: grayscale(1) opacity(0.35);
-        }
-
-        .racha-modal-info {
-            font-size: 0.78rem;
-            color: #666;
-            text-align: center;
-            line-height: 1.4;
-        }
-
+        .racha-vidas-label  { font-size: 0.85rem; color: #ccc; flex: 1; }
+        .racha-corazones    { display: flex; gap: 0.3rem; font-size: 1.2rem; }
+        .racha-corazon.perdido { filter: grayscale(1) opacity(0.35); }
+        .racha-modal-info   { font-size: 0.78rem; color: #666; text-align: center; line-height: 1.4; }
         .racha-modal-cerrar {
-            width: 100%;
-            padding: 0.7rem;
+            width: 100%; padding: 0.7rem;
             background: rgba(255,120,0,0.15);
-            border: none;
-            border-top: 1px solid rgba(255,120,0,0.2);
-            color: #ff7800;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: background 0.2s;
+            border: none; border-top: 1px solid rgba(255,120,0,0.2);
+            color: var(--naranja); font-weight: 600; cursor: pointer;
+            font-family: inherit; font-size: 0.9rem; transition: background 0.2s;
         }
+        .racha-modal-cerrar:hover { background: rgba(255,120,0,0.25); }
 
-        .racha-modal-cerrar:hover {
-            background: rgba(255,120,0,0.25);
-        }
-
-        /* ========== MAIN ========== */
+        /* ============================================================
+           MAIN CONTENT
+        ============================================================ */
         .main {
             padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        .content-section {
+        /* Secciones: ocultas por defecto, visibles cuando .activa */
+        .seccion {
             display: none;
-            animation: fadeInUp 0.6s ease-out;
+            animation: fadeInUp 0.5s ease-out;
         }
+        .seccion.activa { display: block; }
 
-        .content-section.active {
-            display: block;
-        }
-
+        /* Título de sección */
         .section-title {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2rem; font-weight: 700;
             margin-bottom: 2rem;
             color: var(--blanco);
         }
 
+        /* ============================================================
+           CARDS (usadas en todas las secciones)
+        ============================================================ */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.75rem;
         }
 
         .card {
@@ -454,165 +369,185 @@
             border: 1px solid var(--gris);
             border-radius: 16px;
             padding: 2rem;
-            transition: all 0.4s ease;
+            transition: all 0.35s ease;
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            animation: scaleIn 0.6s ease-out both;
         }
-
+        /* Línea verde animada en hover */
         .card::before {
             content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
             background: linear-gradient(90deg, var(--verde-principal), var(--verde-claro));
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
+            transform: scaleX(0); transition: transform 0.35s ease;
         }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
+        .card:hover::before { transform: scaleX(1); }
         .card:hover {
-            transform: translateY(-8px) scale(1.02);
+            transform: translateY(-6px) scale(1.015);
             border-color: var(--verde-principal);
-            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 15px 40px rgba(16,185,129,0.2);
         }
 
         .card-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
+            width: 60px; height: 60px;
+            background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1));
             border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-            transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.5rem; font-size: 1.5rem; transition: all 0.3s ease;
         }
-
         .card:hover .card-icon {
             background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
             transform: scale(1.1) rotate(5deg);
         }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            color: var(--blanco);
-        }
-
-        .card-description {
-            font-size: 0.95rem;
-            color: #a0a0a0;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
+        .card-title       { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--blanco); }
+        .card-description { font-size: 0.95rem; color: #a0a0a0; line-height: 1.6; margin-bottom: 1.5rem; }
 
         .card-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+            display: inline-flex; align-items: center; gap: 0.5rem;
             padding: 0.75rem 1.5rem;
             background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
-            color: var(--blanco);
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
+            color: var(--blanco); border: none; border-radius: 8px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            font-family: inherit; font-size: 0.95rem; text-decoration: none;
+        }
+        .card-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16,185,129,0.3); }
+
+        /* ============================================================
+           PLACEHOLDER (secciones en construcción)
+        ============================================================ */
+        .placeholder-wrap {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 320px; gap: 1.2rem;
+            background: var(--gris-oscuro);
+            border: 2px dashed var(--gris-claro);
+            border-radius: 20px; text-align: center; padding: 3rem;
+        }
+        .placeholder-icono  { font-size: 3.5rem; }
+        .placeholder-titulo { font-size: 1.4rem; font-weight: 700; color: var(--blanco); }
+        .placeholder-texto  { font-size: 0.95rem; color: #666; max-width: 380px; line-height: 1.6; }
+        .placeholder-badge  {
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.25);
+            color: var(--verde-claro);
+            font-size: 0.75rem; font-weight: 700;
+            padding: 0.3rem 0.85rem; border-radius: 20px;
+            letter-spacing: 0.06em; text-transform: uppercase;
         }
 
-        .card-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        /* ============================================================
+           SECCIÓN PERFIL (layout específico)
+        ============================================================ */
+        .perfil-seccion {
+            display: flex; flex-direction: column; gap: 1.5rem; max-width: 560px;
         }
+        .perfil-card {
+            background: var(--gris-oscuro);
+            border: 1px solid var(--gris);
+            border-radius: 16px; padding: 1.75rem;
+        }
+        .perfil-card-titulo {
+            font-size: 0.8rem; font-weight: 700; color: #555;
+            letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem;
+        }
+        .perfil-dato-fila {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .perfil-dato-fila:last-child { border-bottom: none; }
+        .perfil-dato-label { font-size: 0.85rem; color: #666; flex: 1; }
+        .perfil-dato-valor { font-size: 0.9rem; color: var(--blanco); font-weight: 500; }
+        .perfil-racha-grande {
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .perfil-fuego-grande {
+            font-size: 3rem;
+            filter: drop-shadow(0 0 12px rgba(255,120,0,0.5));
+        }
+        .perfil-dias-num { font-size: 2.5rem; font-weight: 900; color: var(--naranja); }
+        .perfil-dias-lbl { font-size: 0.85rem; color: #666; }
 
-        /* ========== RESPONSIVE ========== */
-        @media (max-width: 900px) {
-            .header {
-                flex-wrap: wrap;
-                padding: 0.75rem 1rem;
-                gap: 0.75rem;
-            }
-            .nav-inline { order: 3; width: 100%; }
-            .nav-list { flex-wrap: wrap; gap: 0.4rem; }
-            .nav-item { font-size: 0.85rem; padding: 0.4rem 0.75rem; }
+        /* ============================================================
+           RESPONSIVE
+        ============================================================ */
+        @media (max-width: 768px) {
+            .header { padding: 0.65rem 1rem; }
+            .logo-text { display: none; }
             .main { padding: 1rem; }
-            .cards-grid { grid-template-columns: 1fr; }
+            .cards-grid { grid-template-columns: 1fr; gap: 1rem; }
             .section-title { font-size: 1.5rem; }
+            .racha-modal-overlay { padding-right: 1rem; padding-top: 65px; }
         }
+
     </style>
 </head>
 <body>
-    <header class="header">
-        <a href="index.html" class="logo">
-            <div class="logo-icon">S11</div>
-            <div class="logo-text">ICFES</div>
-        </a>
 
-        <nav class="nav-inline">
-            <ul class="nav-list">
-                <li class="nav-item active" data-category="icfes">ICFES Tema General</li>
-                <li class="nav-item" data-category="retos">Retos</li>
-                <li class="nav-item" data-category="simulacros">Simulacros</li>
-                <li class="nav-item" data-category="preguntas">Preguntas Rápidas</li>
+    <!-- ============================================================
+         SIDEBAR OVERLAY (menú lateral)
+         Para agregar secciones: copiar un .sidebar-item y cambiar data-seccion
+    ============================================================ -->
+    <div class="sidebar-overlay" id="sidebar-overlay">
+        <nav class="sidebar" id="sidebar">
+
+            <!-- Cabecera del sidebar -->
+            <div class="sidebar-head">
+                <a href="index.html" class="sidebar-logo">
+                    <div class="sidebar-logo-icon">S11</div>
+                    <span class="sidebar-logo-texto">ICFES</span>
+                </a>
+                <button class="sidebar-cerrar" id="sidebar-cerrar" aria-label="Cerrar menú">✕</button>
+            </div>
+
+            <!-- Grupo: Secciones principales -->
+            <span class="sidebar-grupo">Estudiar</span>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item activo" data-seccion="inicio">
+                    <span class="sidebar-item-icono">🏠</span> Inicio
+                </li>
+                <li class="sidebar-item" data-seccion="preguntas-rapidas">
+                    <span class="sidebar-item-icono">⚡</span> Preguntas Rápidas
+                </li>
+                <li class="sidebar-item" data-seccion="mini-simulacros">
+                    <span class="sidebar-item-icono">📋</span> Mini Simulacros
+                </li>
+                <li class="sidebar-item" data-seccion="retos">
+                    <span class="sidebar-item-icono">🎯</span> Retos
+                </li>
             </ul>
+
+            <!-- Grupo: Rankings -->
+            <span class="sidebar-grupo">Rankings</span>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item" data-seccion="ranking-rachas">
+                    <span class="sidebar-item-icono">🔥</span> Ranking de Rachas
+                </li>
+                <li class="sidebar-item" data-seccion="ranking-preguntas">
+                    <span class="sidebar-item-icono">⚡</span> Ranking Preguntas
+                </li>
+                <li class="sidebar-item" data-seccion="ranking-general">
+                    <span class="sidebar-item-icono">🏆</span> Ranking General
+                </li>
+            </ul>
+
+            <!-- Grupo: Cuenta -->
+            <span class="sidebar-grupo">Cuenta</span>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item" data-seccion="perfil">
+                    <span class="sidebar-item-icono">👤</span> Mi Perfil
+                </li>
+            </ul>
+
         </nav>
+    </div>
 
-        <div class="user-info">
-            <!-- Racha de fuego -->
-            <div class="racha-wrap" id="racha-wrap" title="Ver racha">
-                <span class="racha-fuego" id="racha-fuego">🔥</span>
-                <span class="racha-num" id="racha-num">0</span>
-            </div>
-
-            <!-- Avatar perfil -->
-            <div class="perfil-wrap">
-                <button class="perfil-btn" id="perfil-btn" aria-label="Perfil">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="8" r="4"/>
-                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                    </svg>
-                </button>
-                <div class="perfil-dropdown" id="perfil-dropdown">
-                    <!-- Cabecera estilo Chrome -->
-                    <div class="perfil-header">
-                        <div class="perfil-avatar-grande">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="8" r="4"/>
-                                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                            </svg>
-                        </div>
-                        <div class="perfil-nombre" id="perfil-nombre">Cargando...</div>
-                        <div class="perfil-email" id="perfil-email">cargando...</div>
-                    </div>
-                    <hr class="perfil-divider">
-                    <div class="perfil-opciones">
-                        <button class="perfil-option" id="config-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-                            Configuración
-                        </button>
-                        <button class="perfil-option danger" id="logout-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                            Cerrar sesión
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Modal Racha -->
+    <!-- ============================================================
+         MODAL RACHA (popup al hacer clic en el fuego)
+    ============================================================ -->
     <div class="racha-modal-overlay" id="racha-modal-overlay">
-        <div class="racha-modal" id="racha-modal">
+        <div class="racha-modal">
             <div class="racha-modal-header">
                 <div class="racha-modal-fuego">🔥</div>
                 <div class="racha-modal-dias" id="modal-dias">0</div>
@@ -634,120 +569,356 @@
         </div>
     </div>
 
+    <!-- ============================================================
+         HEADER
+    ============================================================ -->
+    <header class="header">
+
+        <!-- Izquierda: hamburger + logo -->
+        <div class="header-izquierda">
+            <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="index.html" class="logo">
+                <div class="logo-icon">S11</div>
+                <div class="logo-text">ICFES</div>
+            </a>
+        </div>
+
+        <!-- Derecha: racha + perfil -->
+        <div class="user-info">
+            <div class="racha-wrap" id="racha-wrap" title="Ver mi racha">
+                <span class="racha-fuego" id="racha-fuego">🔥</span>
+                <span class="racha-num"   id="racha-num">0</span>
+            </div>
+
+            <div class="perfil-wrap">
+                <button class="perfil-btn" id="perfil-btn" aria-label="Perfil">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                </button>
+
+                <div class="perfil-dropdown" id="perfil-dropdown">
+                    <div class="perfil-header">
+                        <div class="perfil-avatar-grande">
+                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.5"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                            </svg>
+                        </div>
+                        <div class="perfil-nombre" id="perfil-nombre">Cargando...</div>
+                        <div class="perfil-email"  id="perfil-email">cargando...</div>
+                    </div>
+                    <hr class="perfil-divider">
+                    <div class="perfil-opciones">
+                        <button class="perfil-option" id="config-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83
+                                         M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                            </svg>
+                            Configuración
+                        </button>
+                        <button class="perfil-option danger" id="logout-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16 17 21 12 16 7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                            Cerrar sesión
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================================
+         CONTENIDO PRINCIPAL
+    ============================================================ -->
     <main class="main">
-        <section class="content-section active" id="icfes">
-            <h1 class="section-title">ICFES — Tema General</h1>
-            <div class="cards-grid">
-                <div class="card">
-                    <div class="card-icon">📐</div>
-                    <h3 class="card-title">Matemáticas</h3>
-                    <p class="card-description">Álgebra, geometría, estadística y razonamiento cuantitativo para el examen ICFES.</p>
-                    <button class="card-btn">Explorar <span>→</span></button>
-                </div>
-                <div class="card">
-                    <div class="card-icon">📖</div>
-                    <h3 class="card-title">Lectura Crítica</h3>
-                    <p class="card-description">Comprensión lectora, análisis de textos y habilidades interpretativas.</p>
-                    <button class="card-btn">Explorar <span>→</span></button>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🌍</div>
-                    <h3 class="card-title">Inglés</h3>
-                    <p class="card-description">Vocabulario, gramática y comprensión auditiva del idioma inglés.</p>
-                    <button class="card-btn">Explorar <span>→</span></button>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🏛️</div>
-                    <h3 class="card-title">Sociales y Ciudadanía</h3>
-                    <p class="card-description">Historia, geografía, economía y conceptos de ciudadanía.</p>
-                    <button class="card-btn">Explorar <span>→</span></button>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🧬</div>
-                    <h3 class="card-title">Ciencias Naturales</h3>
-                    <p class="card-description">Biología, química, física y ciencias de la tierra.</p>
-                    <button class="card-btn">Explorar <span>→</span></button>
-                </div>
-            </div>
-        </section>
 
-        <section class="content-section" id="retos">
-            <h1 class="section-title">Retos</h1>
-            <div class="cards-grid">
-                <div class="card">
-                    <div class="card-icon">🎯</div>
-                    <h3 class="card-title">Reto del día</h3>
-                    <p class="card-description">Completa el desafío diario para mantener tu preparación activa.</p>
-                    <button class="card-btn">Comenzar <span>→</span></button>
-                </div>
-                <div class="card">
-                    <div class="card-icon">📅</div>
-                    <h3 class="card-title">Meta semanal</h3>
-                    <p class="card-description">Establece y alcanza tus objetivos de estudio semanales.</p>
-                    <button class="card-btn">Configurar <span>→</span></button>
-                </div>
-                <div class="card">
-                    <div class="card-icon">🏆</div>
-                    <h3 class="card-title">Desafío por bloque</h3>
-                    <p class="card-description">Enfréntate a retos específicos de cada área del examen.</p>
-                    <button class="card-btn">Elegir bloque <span>→</span></button>
-                </div>
-            </div>
-        </section>
 
-        <section class="content-section" id="simulacros">
-            <h1 class="section-title">Simulacros</h1>
+        <!-- ========================================================
+             SECCIÓN 1: INICIO  (activa por defecto)
+             Aquí va: bienvenida, resumen de progreso, accesos rápidos
+        ======================================================== -->
+        <section class="seccion activa" id="inicio">
+            <h1 class="section-title">Inicio</h1>
             <div class="cards-grid">
+
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3 class="card-title">Preguntas Rápidas</h3>
+                    <p class="card-description">Practica con preguntas cortas de cualquier área para calentar el cerebro.</p>
+                    <button class="card-btn" onclick="navegarA('preguntas-rapidas')">Ir a Preguntas <span>→</span></button>
+                </div>
+
                 <div class="card">
                     <div class="card-icon">📋</div>
-                    <h3 class="card-title">Simulacro completo</h3>
-                    <p class="card-description">Prueba completa del examen ICFES con tiempo limitado.</p>
-                    <button class="card-btn">Iniciar <span>→</span></button>
+                    <h3 class="card-title">Mini Simulacros</h3>
+                    <p class="card-description">Practica con pruebas cortas que simulan el formato real del ICFES.</p>
+                    <button class="card-btn" onclick="navegarA('mini-simulacros')">Ir a Simulacros <span>→</span></button>
                 </div>
+
                 <div class="card">
-                    <div class="card-icon">🔍</div>
-                    <h3 class="card-title">Simulacro por bloque</h3>
-                    <p class="card-description">Enfócate en un área específica del examen.</p>
-                    <button class="card-btn">Seleccionar <span>→</span></button>
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Retos del día</h3>
+                    <p class="card-description">Completa el reto diario para mantener tu racha activa.</p>
+                    <button class="card-btn" onclick="navegarA('retos')">Ver Retos <span>→</span></button>
                 </div>
+
                 <div class="card">
-                    <div class="card-icon">📊</div>
-                    <h3 class="card-title">Repaso de resultados</h3>
-                    <p class="card-description">Analiza tus simulacros anteriores y mejora tus puntos débiles.</p>
-                    <button class="card-btn">Ver resultados <span>→</span></button>
+                    <div class="card-icon">🏆</div>
+                    <h3 class="card-title">Rankings</h3>
+                    <p class="card-description">Mira cómo estás frente a tus compañeros en rachas y preguntas.</p>
+                    <button class="card-btn" onclick="navegarA('ranking-general')">Ver Rankings <span>→</span></button>
                 </div>
+
             </div>
         </section>
 
-        <section class="content-section" id="preguntas">
+
+        <!-- ========================================================
+             SECCIÓN 2: PREGUNTAS RÁPIDAS
+             Aquí va: lógica de preguntas, temporizador, puntaje
+        ======================================================== -->
+        <section class="seccion" id="preguntas-rapidas">
             <h1 class="section-title">Preguntas Rápidas</h1>
             <div class="cards-grid">
+
                 <div class="card">
                     <div class="card-icon">🎲</div>
                     <h3 class="card-title">10 preguntas aleatorias</h3>
-                    <p class="card-description">Sesión rápida con preguntas de diferentes áreas.</p>
+                    <p class="card-description">Sesión rápida con preguntas de distintas áreas del ICFES.</p>
                     <button class="card-btn">Jugar <span>→</span></button>
                 </div>
+
                 <div class="card">
                     <div class="card-icon">⏱️</div>
                     <h3 class="card-title">Contrarreloj</h3>
-                    <p class="card-description">Responde la mayor cantidad posible en tiempo limitado.</p>
+                    <p class="card-description">Responde la mayor cantidad posible antes de que el tiempo acabe.</p>
                     <button class="card-btn">Comenzar <span>→</span></button>
                 </div>
+
                 <div class="card">
                     <div class="card-icon">📚</div>
                     <h3 class="card-title">Por materia</h3>
-                    <p class="card-description">Practica preguntas específicas de una materia.</p>
+                    <p class="card-description">Elige un área específica y practica solo esa materia.</p>
                     <button class="card-btn">Elegir materia <span>→</span></button>
                 </div>
+
             </div>
         </section>
-    </main>
 
+
+        <!-- ========================================================
+             SECCIÓN 3: MINI SIMULACROS
+             Aquí va: simulacros por bloque, resultados anteriores
+        ======================================================== -->
+        <section class="seccion" id="mini-simulacros">
+            <h1 class="section-title">Mini Simulacros</h1>
+            <div class="cards-grid">
+
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h3 class="card-title">Simulacro completo</h3>
+                    <p class="card-description">Prueba completa que simula el examen ICFES real con tiempo limitado.</p>
+                    <button class="card-btn">Iniciar <span>→</span></button>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🔍</div>
+                    <h3 class="card-title">Simulacro por bloque</h3>
+                    <p class="card-description">Enfócate en un área específica: matemáticas, inglés, ciencias…</p>
+                    <button class="card-btn">Seleccionar <span>→</span></button>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">Mis resultados</h3>
+                    <p class="card-description">Revisa tus simulacros anteriores e identifica dónde mejorar.</p>
+                    <button class="card-btn">Ver resultados <span>→</span></button>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             SECCIÓN 4: RETOS
+             Aquí va: reto del día, metas semanales, desafíos
+        ======================================================== -->
+        <section class="seccion" id="retos">
+            <h1 class="section-title">Retos</h1>
+            <div class="cards-grid">
+
+                <div class="card">
+                    <div class="card-icon">🎯</div>
+                    <h3 class="card-title">Reto del día</h3>
+                    <p class="card-description">Completa el desafío diario para mantener tu preparación y sumar a la racha.</p>
+                    <button class="card-btn" id="btn-reto-dia">Comenzar <span>→</span></button>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📅</div>
+                    <h3 class="card-title">Meta semanal</h3>
+                    <p class="card-description">Establece y cumple tus objetivos de estudio para la semana.</p>
+                    <button class="card-btn">Configurar <span>→</span></button>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🏆</div>
+                    <h3 class="card-title">Desafío por bloque</h3>
+                    <p class="card-description">Elige un área y supera el reto específico de esa materia.</p>
+                    <button class="card-btn">Elegir bloque <span>→</span></button>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             SECCIÓN 5: RANKING DE RACHAS
+             Aquí va: tabla con usuarios ordenados por días de racha
+        ======================================================== -->
+        <section class="seccion" id="ranking-rachas">
+            <h1 class="section-title">Ranking de Rachas</h1>
+            <div class="placeholder-wrap">
+                <div class="placeholder-icono">🔥</div>
+                <h2 class="placeholder-titulo">Ranking de Rachas</h2>
+                <p class="placeholder-texto">
+                    Aquí se mostrará la tabla con los estudiantes ordenados
+                    por días de racha consecutivos. Se conecta con Supabase.
+                </p>
+                <span class="placeholder-badge">En construcción</span>
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             SECCIÓN 6: RANKING DE PREGUNTAS RÁPIDAS
+             Aquí va: tabla con usuarios ordenados por preguntas correctas
+        ======================================================== -->
+        <section class="seccion" id="ranking-preguntas">
+            <h1 class="section-title">Ranking de Preguntas</h1>
+            <div class="placeholder-wrap">
+                <div class="placeholder-icono">⚡</div>
+                <h2 class="placeholder-titulo">Ranking de Preguntas Rápidas</h2>
+                <p class="placeholder-texto">
+                    Aquí se mostrará quién ha respondido más preguntas correctamente.
+                    Se conecta con Supabase para traer los datos en tiempo real.
+                </p>
+                <span class="placeholder-badge">En construcción</span>
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             SECCIÓN 7: RANKING GENERAL / CONCURSO
+             Aquí va: ranking combinado, concursos especiales
+        ======================================================== -->
+        <section class="seccion" id="ranking-general">
+            <h1 class="section-title">Ranking General</h1>
+            <div class="placeholder-wrap">
+                <div class="placeholder-icono">🏆</div>
+                <h2 class="placeholder-titulo">Ranking General & Concurso</h2>
+                <p class="placeholder-texto">
+                    Clasificación combinada: racha + preguntas + simulacros.
+                    También se podrán crear concursos por período o grupo.
+                </p>
+                <span class="placeholder-badge">En construcción</span>
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             SECCIÓN 8: PERFIL
+             Aquí va: datos del usuario, estadísticas personales, config
+        ======================================================== -->
+        <section class="seccion" id="perfil">
+            <h1 class="section-title">Mi Perfil</h1>
+            <div class="perfil-seccion">
+
+                <!-- Racha actual -->
+                <div class="perfil-card">
+                    <p class="perfil-card-titulo">Racha activa</p>
+                    <div class="perfil-racha-grande">
+                        <span class="perfil-fuego-grande">🔥</span>
+                        <div>
+                            <div class="perfil-dias-num" id="perfil-dias">0</div>
+                            <div class="perfil-dias-lbl">días consecutivos</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Datos de la cuenta -->
+                <div class="perfil-card">
+                    <p class="perfil-card-titulo">Cuenta</p>
+                    <div class="perfil-dato-fila">
+                        <span class="perfil-dato-label">Nombre</span>
+                        <span class="perfil-dato-valor" id="perfil-nombre-sec">—</span>
+                    </div>
+                    <div class="perfil-dato-fila">
+                        <span class="perfil-dato-label">Correo</span>
+                        <span class="perfil-dato-valor" id="perfil-email-sec">—</span>
+                    </div>
+                </div>
+
+                <!-- Estadísticas (placeholders listos para llenar) -->
+                <div class="perfil-card">
+                    <p class="perfil-card-titulo">Estadísticas</p>
+                    <div class="perfil-dato-fila">
+                        <span class="perfil-dato-label">Preguntas respondidas</span>
+                        <span class="perfil-dato-valor" id="perfil-preguntas">—</span>
+                    </div>
+                    <div class="perfil-dato-fila">
+                        <span class="perfil-dato-label">Simulacros completados</span>
+                        <span class="perfil-dato-valor" id="perfil-simulacros">—</span>
+                    </div>
+                    <div class="perfil-dato-fila">
+                        <span class="perfil-dato-label">Retos completados</span>
+                        <span class="perfil-dato-valor" id="perfil-retos">—</span>
+                    </div>
+                    <div class="perfil-dato-fila">
+                        <span class="perfil-dato-label">Racha máxima</span>
+                        <span class="perfil-dato-valor" id="perfil-racha-max">—</span>
+                    </div>
+                </div>
+
+                <!-- Acción: cerrar sesión -->
+                <button class="card-btn" id="perfil-logout-btn"
+                        style="align-self:flex-start; background: linear-gradient(135deg,#c53030,#9b2c2c);">
+                    Cerrar sesión
+                </button>
+
+            </div>
+        </section>
+
+
+    </main><!-- fin .main -->
+
+
+    <!-- ============================================================
+         JAVASCRIPT
+         Bloques separados con comentarios para saber qué hace cada parte
+    ============================================================ -->
     <script type="module">
         import { supabase } from './js/supabase.js';
 
-        // ===== SESIÓN =====
+        /* ----------------------------------------------------------
+           SESIÓN: verifica que el usuario esté logueado
+        ---------------------------------------------------------- */
         async function checkSession() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
@@ -755,43 +926,96 @@
                 return;
             }
             const email = session.user.email;
-            // Nombre desde metadata guardado en el registro
             const nombreRaw = session.user.user_metadata?.name
                            || session.user.user_metadata?.full_name
                            || '';
-            // Capitalizar cada palabra: "joseph enrique" → "Joseph Enrique"
             const nombre = nombreRaw
-                .toLowerCase()
-                .split(' ')
-                .filter(Boolean)
+                .toLowerCase().split(' ').filter(Boolean)
                 .map(p => p.charAt(0).toUpperCase() + p.slice(1))
                 .join(' ') || email;
+
+            // Dropdown del header
             document.getElementById('perfil-nombre').textContent = nombre;
-            document.getElementById('perfil-email').textContent = email;
+            document.getElementById('perfil-email').textContent  = email;
+
+            // Sección perfil
+            document.getElementById('perfil-nombre-sec').textContent = nombre;
+            document.getElementById('perfil-email-sec').textContent  = email;
         }
 
-        // ===== NAVEGACIÓN =====
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-                item.classList.add('active');
-                document.getElementById(item.dataset.category).classList.add('active');
+        /* ----------------------------------------------------------
+           NAVEGACIÓN: muestra/oculta secciones y marca ítem activo
+        ---------------------------------------------------------- */
+        function navegarA(seccionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.seccion').forEach(s => s.classList.remove('activa'));
+            // Mostrar la sección destino
+            const destino = document.getElementById(seccionId);
+            if (destino) destino.classList.add('activa');
+
+            // Marcar ítem activo en el sidebar
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.toggle('activo', item.dataset.seccion === seccionId);
             });
+
+            // Cerrar sidebar
+            cerrarSidebar();
+
+            // Scroll suave al inicio
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Exponer navegarA globalmente para usarlo en onclick="" de las tarjetas
+        window.navegarA = navegarA;
+
+        // Clic en ítems del sidebar
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', () => navegarA(item.dataset.seccion));
         });
 
-        // ===== DROPDOWN PERFIL =====
-        const perfilBtn = document.getElementById('perfil-btn');
+        /* ----------------------------------------------------------
+           HAMBURGER / SIDEBAR: abrir y cerrar
+        ---------------------------------------------------------- */
+        const hamburgerBtn  = document.getElementById('hamburger-btn');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+        function abrirSidebar() {
+            hamburgerBtn.classList.add('abierto');
+            sidebarOverlay.classList.add('abierto');
+            document.body.style.overflow = 'hidden'; // evitar scroll detrás
+        }
+
+        function cerrarSidebar() {
+            hamburgerBtn.classList.remove('abierto');
+            sidebarOverlay.classList.remove('abierto');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            sidebarOverlay.classList.contains('abierto') ? cerrarSidebar() : abrirSidebar();
+        });
+
+        document.getElementById('sidebar-cerrar').addEventListener('click', cerrarSidebar);
+
+        // Clic fuera del sidebar lo cierra
+        sidebarOverlay.addEventListener('click', e => {
+            if (e.target === sidebarOverlay) cerrarSidebar();
+        });
+
+        /* ----------------------------------------------------------
+           PERFIL DROPDOWN (menú del avatar en el header)
+        ---------------------------------------------------------- */
+        const perfilBtn      = document.getElementById('perfil-btn');
         const perfilDropdown = document.getElementById('perfil-dropdown');
 
-        perfilBtn.addEventListener('click', (e) => {
+        perfilBtn.addEventListener('click', e => {
             e.stopPropagation();
             perfilDropdown.classList.toggle('open');
-            // Cerrar modal racha si está abierto
             document.getElementById('racha-modal-overlay').classList.remove('open');
         });
 
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             if (!e.target.closest('.perfil-wrap')) {
                 perfilDropdown.classList.remove('open');
             }
@@ -807,45 +1031,53 @@
             perfilDropdown.classList.remove('open');
         });
 
-        // ===== RACHA =====
+        // Botón cerrar sesión en la sección Perfil
+        document.getElementById('perfil-logout-btn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html';
+        });
+
+        /* ----------------------------------------------------------
+           RACHA: carga, actualiza UI y maneja las vidas
+        ---------------------------------------------------------- */
         function cargarRacha() {
             const ultimoDia = localStorage.getItem('racha_ultimo_dia');
-            let dias = parseInt(localStorage.getItem('racha_dias') || '0');
+            let dias  = parseInt(localStorage.getItem('racha_dias')  || '0');
             let vidas = parseInt(localStorage.getItem('racha_vidas') ?? '2');
 
             if (ultimoDia) {
-                const ultimo = new Date(ultimoDia);
-                const hoyDate = new Date();
-                // Normalizar a medianoche para contar días correctamente
+                const ultimo   = new Date(ultimoDia);
+                const hoyDate  = new Date();
                 ultimo.setHours(0,0,0,0);
                 hoyDate.setHours(0,0,0,0);
                 const diffDias = Math.floor((hoyDate - ultimo) / (1000 * 60 * 60 * 24));
 
                 if (diffDias >= 1 && ultimoDia !== new Date().toDateString()) {
-                    // Pasó al menos un día sin jugar
                     if (vidas > 0) {
                         vidas -= 1;
                         localStorage.setItem('racha_vidas', vidas.toString());
                         if (vidas === 0) {
-                            // Sin vidas: reiniciar racha
-                            dias = 0;
-                            vidas = 2;
-                            localStorage.setItem('racha_dias', '0');
+                            dias = 0; vidas = 2;
+                            localStorage.setItem('racha_dias',  '0');
                             localStorage.setItem('racha_vidas', '2');
                             localStorage.removeItem('racha_ultimo_dia');
                         }
                     }
                 }
             }
-
             actualizarRachaUI(dias, vidas);
         }
 
         function actualizarRachaUI(dias, vidas) {
             vidas = vidas ?? parseInt(localStorage.getItem('racha_vidas') ?? '2');
             const wrap = document.getElementById('racha-wrap');
-            document.getElementById('racha-num').textContent = dias;
+
+            document.getElementById('racha-num').textContent  = dias;
             document.getElementById('modal-dias').textContent = dias;
+
+            // Sección perfil
+            const perfilDias = document.getElementById('perfil-dias');
+            if (perfilDias) perfilDias.textContent = dias;
 
             // Corazones en el modal
             const corazonesEl = document.getElementById('racha-corazones');
@@ -857,42 +1089,43 @@
                 corazonesEl.appendChild(c);
             }
 
-            // Info del modal
             const info = document.getElementById('racha-modal-info');
             if (dias === 0) {
                 info.textContent = 'Completa el Reto del día para encender tu racha 🔥';
                 wrap.classList.remove('activa');
             } else if (vidas < 2) {
-                info.textContent = `¡Cuidado! Te queda ${vidas} vida${vidas === 1 ? '' : 's'}. Juega hoy para no perder la racha.`;
+                info.textContent = `¡Cuidado! Te queda${vidas === 1 ? '' : 'n'} ${vidas} vida${vidas === 1 ? '' : 's'}. Juega hoy.`;
                 wrap.classList.add('activa');
             } else {
                 info.textContent = `¡Llevas ${dias} día${dias === 1 ? '' : 's'} seguido${dias === 1 ? '' : 's'}! Sigue así 💪`;
                 wrap.classList.add('activa');
             }
-
-            // Fuego apagado/encendido
             if (dias === 0) wrap.classList.remove('activa');
         }
 
-        // Completar reto del día: suma racha y restaura vidas
-        window.completarRetoDia = function() {
-            const hoy = new Date().toDateString();
+        // Completa el reto del día (sumar +1 a la racha)
+        window.completarRetoDia = function () {
+            const hoy      = new Date().toDateString();
             const ultimoDia = localStorage.getItem('racha_ultimo_dia');
-            if (ultimoDia === hoy) return; // Ya jugó hoy
-
+            if (ultimoDia === hoy) {
+                alert('¡Ya completaste el reto de hoy! Vuelve mañana. 🔥');
+                return;
+            }
             let dias = parseInt(localStorage.getItem('racha_dias') || '0');
             dias += 1;
-            localStorage.setItem('racha_dias', dias.toString());
+            localStorage.setItem('racha_dias',       dias.toString());
             localStorage.setItem('racha_ultimo_dia', hoy);
-            localStorage.setItem('racha_vidas', '2'); // restaurar vidas al jugar
+            localStorage.setItem('racha_vidas',      '2');
             actualizarRachaUI(dias, 2);
         };
 
-        // ===== MODAL RACHA al clic en fuego =====
-        const rachaWrap = document.getElementById('racha-wrap');
+        /* ----------------------------------------------------------
+           MODAL RACHA (popup al hacer clic en el fuego del header)
+        ---------------------------------------------------------- */
+        const rachaWrap    = document.getElementById('racha-wrap');
         const rachaOverlay = document.getElementById('racha-modal-overlay');
 
-        rachaWrap.addEventListener('click', (e) => {
+        rachaWrap.addEventListener('click', e => {
             e.stopPropagation();
             perfilDropdown.classList.remove('open');
             rachaOverlay.classList.toggle('open');
@@ -902,22 +1135,23 @@
             rachaOverlay.classList.remove('open');
         });
 
-        rachaOverlay.addEventListener('click', (e) => {
+        rachaOverlay.addEventListener('click', e => {
             if (e.target === rachaOverlay) rachaOverlay.classList.remove('open');
         });
 
-        // Botón Comenzar del Reto del día
-        document.querySelectorAll('#retos .card-btn').forEach((btn, i) => {
-            if (i === 0) {
-                btn.addEventListener('click', () => {
-                    window.completarRetoDia();
-                });
-            }
+        /* ----------------------------------------------------------
+           BOTÓN RETO DEL DÍA (sección Retos)
+        ---------------------------------------------------------- */
+        document.getElementById('btn-reto-dia').addEventListener('click', () => {
+            window.completarRetoDia();
         });
 
-        // ===== INIT =====
+        /* ----------------------------------------------------------
+           INICIALIZAR
+        ---------------------------------------------------------- */
         checkSession();
         cargarRacha();
+
     </script>
 </body>
 </html>
