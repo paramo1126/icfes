@@ -34,6 +34,7 @@
             align-items: center;
             justify-content: center;
             padding: 24px;
+            overflow-x: hidden;
         }
 
         @keyframes fadeSlide {
@@ -209,6 +210,7 @@
             position: fixed;
             top: 16px;
             right: 16px;
+            left: auto;
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -247,6 +249,40 @@
             from { opacity: 1; transform: translateX(0); }
             to { opacity: 0; transform: translateX(28px); }
         }
+
+        @media (max-width: 560px) {
+            body {
+                align-items: flex-start;
+                padding: 18px 14px;
+            }
+
+            .card {
+                border-radius: 16px;
+                padding: 28px 18px;
+                margin-top: 24px;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            input,
+            .btn {
+                min-height: 48px;
+            }
+
+            .toast-wrap {
+                left: 12px;
+                right: 12px;
+                top: 12px;
+            }
+
+            .toast {
+                min-width: 0;
+                max-width: none;
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -282,7 +318,7 @@
     </form>
 
     <div class="signup-link">
-        <p>¿No tienes cuenta? <a href="./registros/registro.html">Regístrate</a></p>
+        <p>¿No tienes cuenta? <a href="https://wa.me/573102916140">Regístrate</a></p>
     </div>
 </main>
 

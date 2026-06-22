@@ -34,6 +34,7 @@
             align-items: center;
             justify-content: center;
             padding: 1.5rem;
+            overflow-x: hidden;
         }
 
         @keyframes fadeSlide {
@@ -222,6 +223,45 @@
 
         @keyframes slideOut {
             to { opacity: 0; transform: translateX(40px); }
+        }
+
+        @media (max-width: 560px) {
+            body {
+                align-items: flex-start;
+                padding: 1rem 0.85rem;
+            }
+
+            .card {
+                border-radius: 18px;
+                padding: 1.5rem 1rem;
+                margin-top: 1rem;
+            }
+
+            h1 {
+                font-size: 1.55rem;
+            }
+
+            .subtitle {
+                margin-bottom: 1.25rem;
+            }
+
+            input,
+            select,
+            .btn {
+                min-height: 48px;
+            }
+
+            .toast-wrap {
+                left: 12px;
+                right: 12px;
+                top: 12px;
+            }
+
+            .toast {
+                max-width: none;
+                width: 100%;
+                border-radius: 16px;
+            }
         }
     </style>
 </head>

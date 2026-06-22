@@ -17,7 +17,10 @@
             background-color: #0a0a0a;
             color: #ffffff;
             min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        button, input, select, textarea { font: inherit; }
 
         /* ============================================================
            VARIABLES DE COLOR  (editar aquí cambia todo)
@@ -100,7 +103,7 @@
             position: absolute;
             top: 0; left: 0;
             height: 100%;
-            width: 270px;
+            width: min(300px, 86vw);
             background: #111111;
             border-right: 1px solid rgba(16,185,129,0.12);
             transform: translateX(-100%);
@@ -336,8 +339,8 @@
            MAIN CONTENT
         ============================================================ */
         .main {
-            padding: 2rem;
-            max-width: 1200px;
+            padding: clamp(1rem, 3vw, 2rem);
+            width: min(1200px, calc(100% - 1rem));
             margin: 0 auto;
         }
 
@@ -360,7 +363,7 @@
         ============================================================ */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
             gap: 1.75rem;
         }
 
@@ -405,6 +408,7 @@
 
         .card-btn {
             display: inline-flex; align-items: center; gap: 0.5rem;
+            min-height: 44px;
             padding: 0.75rem 1.5rem;
             background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
             color: var(--blanco); border: none; border-radius: 8px;
@@ -440,7 +444,8 @@
            SECCIÓN PERFIL (layout específico)
         ============================================================ */
         .perfil-seccion {
-            display: flex; flex-direction: column; gap: 1.5rem; max-width: 560px;
+            display: flex; flex-direction: column; gap: 1.5rem; max-width: 640px;
+            width: 100%;
         }
         .perfil-card {
             background: var(--gris-oscuro);
@@ -475,10 +480,74 @@
         @media (max-width: 768px) {
             .header { padding: 0.65rem 1rem; }
             .logo-text { display: none; }
-            .main { padding: 1rem; }
+            .main { width: 100%; padding: 1rem; }
             .cards-grid { grid-template-columns: 1fr; gap: 1rem; }
             .section-title { font-size: 1.5rem; }
-            .racha-modal-overlay { padding-right: 1rem; padding-top: 65px; }
+            .card { padding: 1.4rem; border-radius: 14px; }
+            .card-btn { width: 100%; justify-content: center; min-height: 48px; }
+            .racha-modal-overlay {
+                align-items: center;
+                justify-content: center;
+                padding: 1rem;
+            }
+            .racha-modal { width: min(320px, 100%); }
+            .perfil-dropdown {
+                position: fixed;
+                top: 68px;
+                right: 1rem;
+                left: 1rem;
+                min-width: 0;
+                width: auto;
+            }
+            .placeholder-wrap {
+                min-height: 260px;
+                padding: 2rem 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                gap: 0.6rem;
+            }
+
+            .hamburger-btn,
+            .perfil-btn {
+                width: 38px;
+                height: 38px;
+            }
+
+            .racha-wrap {
+                padding: 0.35rem 0.6rem;
+            }
+
+            .section-title {
+                font-size: 1.35rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .perfil-card {
+                padding: 1.25rem;
+            }
+
+            .perfil-dato-fila {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .perfil-racha-grande {
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .user-info {
+                gap: 0.45rem;
+            }
+
+            .racha-num {
+                font-size: 0.82rem;
+            }
         }
 
     </style>
@@ -518,17 +587,11 @@
                 </li>
             </ul>
 
-            <!-- Grupo: Rankings -->
-            <span class="sidebar-grupo">Rankings</span>
+            <!-- Grupo: Constancia -->
+            <span class="sidebar-grupo">Constancia</span>
             <ul class="sidebar-nav">
                 <li class="sidebar-item" data-seccion="ranking-rachas">
                     <span class="sidebar-item-icono">🔥</span> Ranking de Rachas
-                </li>
-                <li class="sidebar-item" data-seccion="ranking-preguntas">
-                    <span class="sidebar-item-icono">⚡</span> Ranking Preguntas
-                </li>
-                <li class="sidebar-item" data-seccion="ranking-general">
-                    <span class="sidebar-item-icono">🏆</span> Ranking General
                 </li>
             </ul>
 
@@ -680,9 +743,9 @@
 
                 <div class="card">
                     <div class="card-icon">🏆</div>
-                    <h3 class="card-title">Rankings</h3>
-                    <p class="card-description">Mira cómo estás frente a tus compañeros en rachas y preguntas.</p>
-                    <button class="card-btn" onclick="navegarA('ranking-general')">Ver Rankings <span>→</span></button>
+                    <h3 class="card-title">Constancia</h3>
+                    <p class="card-description">Mira tu racha y el ranking de estudiantes que han sido más constantes.</p>
+                    <button class="card-btn" onclick="navegarA('ranking-rachas')">Ver Rachas <span>→</span></button>
                 </div>
 
             </div>
@@ -711,13 +774,7 @@
                     <button class="card-btn">Comenzar <span>→</span></button>
                 </div>
 
-                <div class="card">
-                    <div class="card-icon">📚</div>
-                    <h3 class="card-title">Por materia</h3>
-                    <p class="card-description">Elige un área específica y practica solo esa materia.</p>
-                    <button class="card-btn">Elegir materia <span>→</span></button>
-                </div>
-
+              
             </div>
         </section>
 
@@ -807,43 +864,7 @@
 
 
         <!-- ========================================================
-             SECCIÓN 6: RANKING DE PREGUNTAS RÁPIDAS
-             Aquí va: tabla con usuarios ordenados por preguntas correctas
-        ======================================================== -->
-        <section class="seccion" id="ranking-preguntas">
-            <h1 class="section-title">Ranking de Preguntas</h1>
-            <div class="placeholder-wrap">
-                <div class="placeholder-icono">⚡</div>
-                <h2 class="placeholder-titulo">Ranking de Preguntas Rápidas</h2>
-                <p class="placeholder-texto">
-                    Aquí se mostrará quién ha respondido más preguntas correctamente.
-                    Se conecta con Supabase para traer los datos en tiempo real.
-                </p>
-                <span class="placeholder-badge">En construcción</span>
-            </div>
-        </section>
-
-
-        <!-- ========================================================
-             SECCIÓN 7: RANKING GENERAL / CONCURSO
-             Aquí va: ranking combinado, concursos especiales
-        ======================================================== -->
-        <section class="seccion" id="ranking-general">
-            <h1 class="section-title">Ranking General</h1>
-            <div class="placeholder-wrap">
-                <div class="placeholder-icono">🏆</div>
-                <h2 class="placeholder-titulo">Ranking General & Concurso</h2>
-                <p class="placeholder-texto">
-                    Clasificación combinada: racha + preguntas + simulacros.
-                    También se podrán crear concursos por período o grupo.
-                </p>
-                <span class="placeholder-badge">En construcción</span>
-            </div>
-        </section>
-
-
-        <!-- ========================================================
-             SECCIÓN 8: PERFIL
+             SECCIÓN 6: PERFIL
              Aquí va: datos del usuario, estadísticas personales, config
         ======================================================== -->
         <section class="seccion" id="perfil">

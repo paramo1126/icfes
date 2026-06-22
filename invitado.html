@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FocusFlow · Sesión de Estudio</title>
+<title>SECCIONES DE TIEMPO ESTUDIO</title>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
@@ -31,82 +31,26 @@
     min-height:100vh;
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
-    padding:0;
-    display:flex;
-    flex-direction:column;
+    padding:24px 16px 60px;
   }
-
-  /* NAVBAR */
-  .navbar{
+  .wrap{max-width:1100px;margin:0 auto}
+  header.top{
     display:flex;align-items:center;justify-content:space-between;
-    padding:16px 24px;
-    border-bottom:1px solid var(--glass-border);
-    background:var(--glass);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    position:sticky;top:0;z-index:100;
+    margin-bottom:28px;
   }
-
-  .brand{
-    display:flex;align-items:center;gap:12px;
-    font-weight:700;letter-spacing:.3px;
-  }
-
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.3px}
   .brand img{
     display:block;
-    height:32px;
-    width:auto;
+    height:clamp(34px,7vw,52px);
+    width:auto;max-width:70vw;
     object-fit:contain;
-    filter:drop-shadow(0 4px 12px rgba(16,185,129,.35));
+    filter:drop-shadow(0 6px 18px rgba(16,185,129,.35));
   }
-
-  .brand-text{
-    font-size:16px;
-    color:var(--text);
-    font-weight:700;
-    letter-spacing:1px;
-  }
-
-  .nav-buttons{
-    display:flex;align-items:center;gap:12px;
-  }
-
-  .nav-btn{
-    appearance:none;
-    border:1px solid var(--glass-border);
-    cursor:pointer;
-    font:inherit;
-    padding:10px 20px;
-    border-radius:10px;
-    font-weight:600;
-    font-size:13px;
-    letter-spacing:0.3px;
-    background:transparent;
-    color:var(--text);
-    transition:all .25s ease;
-  }
-
-  .nav-btn:hover{
-    border-color:var(--green);
-    background:rgba(16,185,129,.08);
-  }
-
-  .nav-btn.secondary:hover{
-    border-color:var(--text);
-    background:rgba(255,255,255,.05);
-  }
-
-  .nav-btn:active{
-    transform:scale(0.98);
-  }
-
-  /* MAIN CONTENT */
-  .wrap{
-    max-width:1100px;
-    margin:0 auto;
-    padding:24px 16px 60px;
-    flex:1;
-    width:100%;
+  .pill{
+    font-size:12px;color:var(--muted);
+    padding:6px 12px;border-radius:999px;
+    background:var(--glass);border:1px solid var(--glass-border);
+    backdrop-filter:blur(10px);
   }
 
   .grid{
@@ -244,60 +188,28 @@
     text-align:center;color:var(--muted);font-size:12px;margin-top:32px;
   }
 
-  @media(max-width:768px){
-    .navbar{
-      padding:12px 16px;
-      flex-wrap:wrap;
-      gap:12px;
-    }
-    .brand-text{
-      font-size:14px;
-    }
-    .nav-buttons{
-      width:100%;
-      order:2;
-    }
-    .nav-btn{
-      flex:1;
-      padding:10px 16px;
-      font-size:12px;
-    }
-  }
-
   @media(max-width:420px){
-    .wrap{padding:18px 12px 50px}
+    body{padding:18px 12px 50px}
     .card{padding:20px;border-radius:20px}
     .timer-card{min-height:auto;padding:24px 16px}
     .controls .btn{padding:12px 16px;font-size:13px;flex:1 1 calc(50% - 10px);justify-content:center}
     .summary{grid-template-columns:repeat(3,1fr);gap:8px}
     .stat{padding:12px 6px}
     .stat .v{font-size:16px}
-    .navbar{
-      padding:12px 12px;
-    }
-    .brand-text{
-      font-size:13px;
-    }
-    .nav-btn{
-      padding:9px 14px;
-      font-size:11px;
-    }
+    header.top{margin-bottom:18px}
+    .pill{display:none}
   }
 </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="brand">
-      <img src="assets/brand-s11.png" alt="S11" />
-      <span class="brand-text">TU RITMO AL 500</span>
-    </div>
-    <div class="nav-buttons">
-      <button class="nav-btn">Iniciar sesión</button>
-      <button class="nav-btn">Acceder como invitado</button>
-    </div>
-  </nav>
-
   <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <img src="assets/brand-s11.png" alt="S11 · Tu ritmo al 500" />
+      </div>
+      <div class="pill">Sesión de estudio · modo invitado</div>
+    </header>
+
     <main class="grid">
       <!-- TIMER -->
       <section class="card timer-card">
@@ -400,7 +312,7 @@
     const gain = audioCtx.createGain();
     osc.type = "square";
     osc.frequency.setValueAtTime(freq, t0);
-    // envolvente muy corta: ataque instantáneo, decaimiento rápido → "tr"
+    // envolvente muy corta: ataque instantáneo, decaimiento rápido → “tr”
     gain.gain.setValueAtTime(0, t0);
     gain.gain.linearRampToValueAtTime(vol||0.22, t0+0.01);
     gain.gain.exponentialRampToValueAtTime(0.0001, t0+0.09);
@@ -411,13 +323,13 @@
   function playAlarm(kind){
     ensureAudio();
     if(!audioCtx) return;
-    // "trtrtrtrtrtrtrtrtr" — 24 golpecitos rápidos en ~2.5 s
+    // “trtrtrtrtrtrtrtrtr” — 24 golpecitos rápidos en ~2.5 s
     const base = 880; // A5
     for(let i=0;i<24;i++){
       const ms = i*105;
       const f = base + (i%3)*35; // leve variación para que no sea monótono
       rattleTone(f, ms, 0.20);
-      rattleTone(f+6, ms+25, 0.12); // segunda voz desafinada para más "trr"
+      rattleTone(f+6, ms+25, 0.12); // segunda voz desafinada para más “trr”
     }
     if(navigator.vibrate){ try{ navigator.vibrate([80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40,80,40]); }catch(e){} }
   }
